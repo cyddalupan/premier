@@ -1,0 +1,12 @@
+# Environments
+.env
+venv/
+
+# Byte-code files
+*.pyc
+__pycache__/
+
+# OS generated files
+.DS_Store
+.Trashes
+Thumbs.db

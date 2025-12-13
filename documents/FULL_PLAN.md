@@ -3,25 +3,37 @@ Project Blueprint: Law Review Center AI Chatbot
 Review Center AI Chatbot
 
 1. Core Logic & Mechanics
+
+D. Message Processing Flow (Detailed Steps)
+The following steps outline the sequential processing of incoming messages, orchestrated by a queuing system:
+    1.  **Queue Entry:** An incoming message is first placed into a processing queue.
+    2.  **Retrieve User FB ID:** Extract the Facebook PSID (user_id) from the message.
+    3.  **Echo Check:** Determine if the message is an echo from Messenger (indicating an admin's reply).
+        *   **If Yes (Admin Echo):**
+            *   Save the admin's message to the Chat Logs (with sender_type: ADMIN_MANUAL).
+            *   Update the user's data, noting that the admin has replied.
+            *   Update the user's `last_admin_reply_timestamp`.
+            *   **STOP Processing** for this message.
+    4.  **Get User Data:** Retrieve comprehensive user data based on the `fb_id`.
+    5.  **Save User Message:** Save the incoming user's message to the Chat Logs (with sender_type: USER).
+    6.  **Admin Active Check:** Check if an admin has replied to this user within the last 10 minutes (using `last_admin_reply_timestamp`).
+        *   **If Yes:** **STOP Processing** for this message.
+    7.  **Determine User Stage:** Based on user data, identify the `current_stage` (e.g., ONBOARDING, MARKETING, MOCK_EXAM, GENERAL_BOT).
+    8.  **Quick Reply Logic:**
+        *   **If the user is NOT in the Mock Exam stage:**
+            *   Generate and send a quick reply using a nano model, incorporating the current prompt and the last 3 messages.
+    9.  **Select Function:** Choose the appropriate function/handler based on the user's `current_stage`. Each stage has distinct rules and processing logic.
+    10. **Generate & Save Replies:** The selected function processes the message, potentially using a mini reasoning model, to generate one or more replies. Each generated reply is saved to the Chat Logs (with sender_type: SYSTEM_AI).
+    11. **Context Summarization Check:** After all replies are generated and saved, check if the total number of uns summarized chat messages (USER, SYSTEM_AI, ADMIN_MANUAL) for this user exceeds 20.
+        *   **If Yes:** Summarize the oldest 14 uns summarized messages, merge with the existing user summary, and update the user's summary field (ensuring it is less than 1,000 characters).
+
 A. The "Manual Override" (Admin Pause)
-This logic prevents the AI from interrupting a human admin during a live chat.
-    •   Trigger: The system listens for the Facebook message_echo event (indicates a message was sent by the Page Admin).
-    •   Action: When an echo is detected, update the user's last_admin_reply_timestamp.
-    •   Condition: Before the AI processes any incoming user message, it checks:  $$CurrentTime - LastAdminReplyTimestamp > 10\ minutes$$ 
-    •   Result:
-    ◦   If True: AI processes the message and replies.
-    ◦   If False: AI ignores the message (silence).
+This mechanism prevents the AI from interrupting a human admin during a live chat. Its detailed operation, including the handling of admin echoes and the 10-minute pause logic, is described in the "Message Processing Flow" (Steps 3 & 6).
 B. Context Management (Memory Optimization)
-To handle token limits while maintaining conversation continuity.
-    •   Storage: A summary field in the User Table (Target: ~1,500 - 2,000 characters).
-    •   The "Sliding Window" Algorithm:
-    ◦   Trigger: When the active chat history hits 10 messages.
-    ◦   Process:
-    1   Take the oldest 7 messages + the current summary.
-    2   Feed them to the LLM with instructions to "Condense this into the existing summary."
-    3   Update the summary field.
-    4   Delete those 7 raw messages from the "Active Context" array (but keep them in the ChatLogs database for records).
-    5   Keep the newest 3 messages as raw text for immediate context.
+This mechanism handles token limits and maintains conversation continuity by dynamically summarizing chat history. The detailed "Sliding Window" algorithm, including its trigger conditions and summarization process, is described in the "Message Processing Flow" (Step 11).
+
+C. Quick Reply Mechanism
+This mechanism provides an immediate, concise response using a nano model. Its conditions for activation (user not in Mock Exam stage) and detailed process are described in the "Message Processing Flow" (Step 8).
 
 2. Database Schema Structure
 A. Users Table (users)
@@ -89,6 +101,9 @@ Trigger: Scheduled cron job checking last_interaction_timestamp. If inactive for
     2   Database Init: Create the tables listed above.
     3   Admin Logic: Implement the middleware to check the 10-minute timer.
     4   Exam Logic: Build the function to fetch random questions and the Prompt Engineering for the "5-Point Feedback."
-    5   Context Logic: Implement the "Summarize 7, Keep 3" algorithm.
-    6   Testing: Specifically test the Admin interruption to ensure the AI stays silent.
+    5   Context Logic: Implement the "Sliding Window" algorithm with the refined summarization rules (triggering at >20 messages, summarizing oldest 14, merging with existing summary, and ensuring the new summary is <1,000 characters).
+    6   Queuing System: Set up a task queuing system (e.g., Celery) for asynchronous message processing and handling the detailed message flow.
+    7   Quick Reply Implementation: Develop the nano-model quick reply mechanism, ensuring it respects the exam stage exclusion.
+    8   Testing: Specifically test the Admin interruption to ensure the AI stays silent.
+    9   Modular Design: Implement each conversational stage (Onboarding, Marketing, Mock Exam, General Bot) as separate functions, ideally in their own files, to promote cleaner code, improve maintainability, and facilitate isolated unit testing.
 
