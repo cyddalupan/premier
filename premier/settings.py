@@ -73,10 +73,14 @@ WSGI_APPLICATION = 'premier.wsgi.application'
 
 import os
 from dotenv import load_dotenv
+from datetime import timedelta # Add this import
+
 
 load_dotenv()
 
 FACEBOOK_PAGE_ACCESS_TOKEN = os.getenv('FACEBOOK_PAGE_ACCESS_TOKEN')
+MESSENGER_VERIFY_TOKEN = os.getenv('MESSENGER_VERIFY_TOKEN')
+OPEN_AI_TOKEN = os.getenv('OPEN_AI_TOKEN')
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
@@ -93,8 +97,22 @@ DATABASES = {
 }
 
 
-# Password validation
-# https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
+# Celery Configuration
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC' # Use the same timezone as Django
+
+# Celery Beat Schedule
+CELERY_BEAT_SCHEDULE = {
+    'check-inactive-users-daily': {
+        'task': 'chat.tasks.check_inactive_users', # Task name to be created
+        'schedule': timedelta(days=1), # Run once every day
+    },
+}
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {

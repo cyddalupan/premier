@@ -97,13 +97,14 @@ Trigger: Scheduled cron job checking last_interaction_timestamp. If inactive for
     6   Mental Health Check: "Law school is tough. Don't forget to hydrate and rest."
 
 5. Technical Implementation Steps (Summary)
-    1   Setup Webhook: Connect to Facebook Messenger API. Subscribe to messages, messaging_postbacks, and message_echoes.
-    2   Database Init: Create the tables listed above.
-    3   Admin Logic: Implement the middleware to check the 10-minute timer.
-    4   Exam Logic: Build the function to fetch random questions and the Prompt Engineering for the "5-Point Feedback."
-    5   Context Logic: Implement the "Sliding Window" algorithm with the refined summarization rules (triggering at >20 messages, summarizing oldest 14, merging with existing summary, and ensuring the new summary is <1,000 characters).
-    6   Queuing System: Set up a task queuing system (e.g., Celery) for asynchronous message processing and handling the detailed message flow.
-    7   Quick Reply Implementation: Develop the nano-model quick reply mechanism, ensuring it respects the exam stage exclusion.
-    8   Testing: Specifically test the Admin interruption to ensure the AI stays silent.
-    9   Modular Design: Implement each conversational stage (Onboarding, Marketing, Mock Exam, General Bot) as separate functions, ideally in their own files, to promote cleaner code, improve maintainability, and facilitate isolated unit testing.
+    1.  **AI Integration Module:** Design and implement shared functions for connecting to various AI models (e.g., for quick replies, summarization, exam grading, content generation). This module will abstract away model specifics, allowing for easy interchangeability and providing distinct functions for different model types or purposes, leveraging `OPEN_AI_TOKEN` from the `.env` file for authentication.
+    2.  Setup Webhook: Connect to Facebook Messenger API. Subscribe to messages, messaging_postbacks, and message_echoes.
+    3.  Database Init: Create the tables listed above.
+    4.  Admin Logic: Implement the middleware to check the 10-minute timer.
+    5.  Exam Logic: Build the function to fetch random questions and the Prompt Engineering for the "5-Point Feedback."
+    6.  Context Logic: Implement the "Sliding Window" algorithm with the refined summarization rules (triggering at >20 messages, summarizing oldest 14, merging with existing summary, and ensuring the new summary is <1,000 characters).
+    7.  Queuing System: Set up a task queuing system (e.g., Celery) for asynchronous message processing and handling the detailed message flow.
+    8.  Quick Reply Implementation: Develop the nano-model quick reply mechanism, ensuring it respects the exam stage exclusion.
+    9.  Testing: Specifically test the Admin interruption to ensure the AI stays silent.
+    10. Modular Design: Implement each conversational stage (Onboarding, Marketing, Mock Exam, General Bot) as separate functions, ideally in their own files, to promote cleaner code, improve maintainability, and facilitate isolated unit testing.
 
