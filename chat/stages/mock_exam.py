@@ -17,13 +17,13 @@ def handle_mock_exam_stage(user, messaging_event):
         question = get_random_exam_question()
         if question:
             user.exam_question_counter = 1
+            user.last_question_id_asked = question  # Store the question
             user.save()
-            # Store current question for grading later
-            # A more robust solution would store the current question ID in the User model.
             response_messages.append(f"Alright, {user.first_name}! Here is your first mock exam question ({user.exam_question_counter}/8):\n\n{question.question_text}")
         else:
             response_messages.append("I'm sorry, I couldn't find any exam questions at the moment. Please try again later.")
             user.current_stage = 'GENERAL_BOT' # Transition out of exam
+            user.last_question_id_asked = None # Clear the question
             user.save()
     elif 1 <= user.exam_question_counter <= 8:
         # User has submitted an answer, grade it and send next question
@@ -31,13 +31,12 @@ def handle_mock_exam_stage(user, messaging_event):
             response_messages.append("Please provide your answer to the last question.")
             return response_messages
 
-        # Placeholder: Retrieve the question the user was supposed to answer
-        # In a real system, you'd have stored the question ID in user. A simple way
-        # for a mock up is to fetch the most recent question asked by the bot.
-        current_question = get_random_exam_question() # This is NOT ideal, but works for placeholder
+        current_question = user.last_question_id_asked
         if not current_question:
-            response_messages.append("Error: Couldn't retrieve the question to grade your answer. Moving to general chat.")
+            response_messages.append("Error: The question to grade your answer could not be found. Moving to general chat.")
             user.current_stage = 'GENERAL_BOT'
+            user.exam_question_counter = 0
+            user.last_question_id_asked = None
             user.save()
             return response_messages
         
@@ -51,34 +50,66 @@ def handle_mock_exam_stage(user, messaging_event):
         )
 
         feedback_message = "Here's the feedback on your answer:\n"
+        exam_score = None
+        grammar_feedback = None
+        legal_basis_feedback = None
+        application_feedback = None
+        conclusion_feedback = None
+
         if feedback and isinstance(feedback, dict):
-            for key, value in feedback.items():
-                if key.endswith('_feedback'):
-                    feedback_message += f"- {key.replace('_', ' ').title()}: {value}\n"
+            if 'grammar_feedback' in feedback:
+                grammar_feedback = feedback['grammar_feedback']
+                feedback_message += f"- Grammar/Syntax: {grammar_feedback}\n"
+            if 'legal_basis_feedback' in feedback:
+                legal_basis_feedback = feedback['legal_basis_feedback']
+                feedback_message += f"- Legal Basis: {legal_basis_feedback}\n"
+            if 'application_feedback' in feedback:
+                application_feedback = feedback['application_feedback']
+                feedback_message += f"- Application: {application_feedback}\n"
+            if 'conclusion_feedback' in feedback:
+                conclusion_feedback = feedback['conclusion_feedback']
+                feedback_message += f"- Conclusion: {conclusion_feedback}\n"
             if 'score' in feedback:
-                feedback_message += f"Your score: {feedback['score']}/100"
+                exam_score = feedback['score']
+                feedback_message += f"Your score: {exam_score}/100\n"
         else:
-            feedback_message += "I'm sorry, I couldn't generate detailed feedback at this time."
+            feedback_message += "I'm sorry, I couldn't generate detailed feedback at this time.\n"
         
         response_messages.append(feedback_message)
 
+        # Save the exam result
+        if exam_score is not None:
+            from ..models import ExamResult # Import locally to avoid circular dependency
+            ExamResult.objects.create(
+                user=user,
+                question=current_question,
+                score=exam_score,
+                grammar_feedback=grammar_feedback,
+                legal_basis_feedback=legal_basis_feedback,
+                application_feedback=application_feedback,
+                conclusion_feedback=conclusion_feedback,
+            )
+
         if user.exam_question_counter < 8:
             # Send next question
-            user.exam_question_counter += 1
-            user.save()
-            next_question = get_random_exam_question() # Again, not robust for tracking
+            next_question = get_random_exam_question() 
             if next_question:
+                user.exam_question_counter += 1
+                user.last_question_id_asked = next_question # Store the new question
+                user.save()
                 response_messages.append(f"Next question ({user.exam_question_counter}/8):\n\n{next_question.question_text}")
             else:
                 response_messages.append("No more questions available. Ending the exam.")
                 user.current_stage = 'GENERAL_BOT'
                 user.exam_question_counter = 0
+                user.last_question_id_asked = None
                 user.save()
         else:
             # Exam finished, transition to next stage
             response_messages.append("You have completed all 8 mock exam questions! Great job!")
             user.current_stage = 'GENERAL_BOT' # Transition to Conversion & General Bot
             user.exam_question_counter = 0
+            user.last_question_id_asked = None
             user.save()
             logger.info(f"User {user.user_id} completed mock exam and transitioned to GENERAL_BOT stage.")
     else:
@@ -86,6 +117,7 @@ def handle_mock_exam_stage(user, messaging_event):
         response_messages.append("It seems there was an issue with the exam. Moving to general chat.")
         user.current_stage = 'GENERAL_BOT'
         user.exam_question_counter = 0
+        user.last_question_id_asked = None
         user.save()
     
-    return response_messages if response_messages else None
+    return response_messages

@@ -1,5 +1,5 @@
 import logging
-from ..models import User # Import User model to interact with it
+from ..models import User, ChatLog # Import User model to interact with it
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +22,7 @@ def handle_onboarding_stage(user, messaging_event):
             response = f"Nice to meet you, {user.first_name}! What is your current academic status or focus area in law (e.g., 1st year, Bar examinee, aspiring lawyer)?"
         else:
             # This handles initial contact or non-text input from a new user
-            response = "Welcome to the Law Review Center AI Chatbot! What should I call you?"
+            response = "Hello! I'm the Law Review Center AI Chatbot, your personal study assistant. What should I call you?"
     else:
         # User has provided their name, now expecting academic status/focus
         if message_text and message_text.strip():
@@ -34,4 +34,10 @@ def handle_onboarding_stage(user, messaging_event):
         else:
             response = f"Hello {user.first_name}! Could you please tell me your academic status or focus area in law?"
     
-    return response
+    if response:
+        ChatLog.objects.create(
+            user=user,
+            sender_type='SYSTEM_AI',
+            message_content=response
+        )
+    return [response] if response else []

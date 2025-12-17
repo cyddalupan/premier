@@ -30,4 +30,4 @@ def handle_marketing_stage(user, messaging_event):
         logger.info(f"User {user.user_id} received marketing message and mock exam offer.")
         # User stays in MARKETING stage until they agree to mock exam or explicit command to change stage
     
-    return response_messages if response_messages else None
+    return response_messages

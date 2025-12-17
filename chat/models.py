@@ -17,6 +17,7 @@ class User(models.Model):
         default='ONBOARDING',
     )
     exam_question_counter = models.IntegerField(default=0)  # 0-8
+    last_question_id_asked = models.ForeignKey('Question', on_delete=models.SET_NULL, null=True, blank=True)
     summary = models.TextField(blank=True, null=True)  # AI-generated summary
     last_admin_reply_timestamp = models.DateTimeField(blank=True, null=True)  # For 10-minute pause logic
     last_interaction_timestamp = models.DateTimeField(blank=True, null=True)  # To trigger follow-up messages
@@ -58,3 +59,17 @@ class ChatLog(models.Model):
 
     def __str__(self):
         return f"{self.sender_type} - {self.user.user_id} - {self.timestamp}"
+
+
+class ExamResult(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    score = models.IntegerField()  # Numerical score (e.g., 1-100)
+    grammar_feedback = models.TextField(blank=True, null=True)
+    legal_basis_feedback = models.TextField(blank=True, null=True)
+    application_feedback = models.TextField(blank=True, null=True)
+    conclusion_feedback = models.TextField(blank=True, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Exam Result for {self.user.first_name} on Question {self.question.id} - Score: {self.score}"

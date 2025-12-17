@@ -86,6 +86,8 @@ def process_messenger_message(messaging_event):
                 logger.info(f"Admin active for user {sender_id}. Pausing AI response.")
                 return # STOP Processing for this message
 
+
+
         # Step 7: Determine User Stage and dispatch to appropriate handler
         logger.info(f"Proceeding with AI logic for user {sender_id} in stage {user.current_stage}")
 
@@ -102,17 +104,19 @@ def process_messenger_message(messaging_event):
             logger.warning(f"Unknown stage for user {sender_id}: {user.current_stage}. Defaulting to General Bot.")
             response_messages = handle_general_bot_stage(user, messaging_event)
 
-        if response_messages:
-            if isinstance(response_messages, list):
-                for msg in response_messages:
-                    if msg: # Only send non-empty messages
-                        send_messenger_message(sender_id, msg)
-                        logger.info(f"Sent stage-specific response to {sender_id}: {msg}")
-            elif isinstance(response_messages, str):
-                send_messenger_message(sender_id, response_messages)
-                logger.info(f"Sent stage-specific response to {sender_id}: {response_messages}")
-            else:
-                logger.warning(f"Stage handler returned unsupported type: {type(response_messages)} for user {sender_id}.")
+        if response_messages: # This will now be true if the list is not empty
+            for msg in response_messages:
+                if msg: # Only process and send non-empty messages
+                    # Save SYSTEM_AI message to ChatLog
+                    ChatLog.objects.create(
+                        user=user,
+                        sender_type='SYSTEM_AI',
+                        message_content=msg
+                    )
+                    logger.info(f"Logged SYSTEM_AI message for {sender_id}: {msg}")
+    
+                    send_messenger_message(sender_id, msg)
+                    logger.info(f"Sent stage-specific response to {sender_id}: {msg}")
 
         # Step 11: Context Summarization Check (Sliding Window Algorithm)
         # After all replies are generated and saved, check if the total number of
@@ -158,21 +162,17 @@ def check_inactive_users():
         current_stage__in=['ONBOARDING', 'MARKETING', 'GENERAL_BOT'] # Exclude MOCK_EXAM
     )
     
-    follow_up_messages = [
-        "Did you know that legal trivia can be fun? Try this: 'What is the highest court in the Philippines?'",
-        "We are giving away a free reviewer PDF for those who are active! Don't miss out!",
-        "Legal Maxim of the Day: 'Ignorantia juris non excusat.' Do you know what it means?",
-        "Law school can be tough. Remember to take breaks and recharge! How are you doing today?",
-        "Want to test your knowledge again? Our mock exam is ready for you!",
-    ]
-    
     for user in inactive_users:
-        message_to_send = random.choice(follow_up_messages)
+        message_to_send = ai_integration_service.generate_re_engagement_message(
+            user_id=user.user_id,
+            current_stage=user.current_stage,
+            user_summary=user.summary
+        )
         send_messenger_message(user.user_id, message_to_send)
-        logger.info(f"Sent re-engagement message to inactive user {user.user_id}: {message_to_send}")
+        logger.info(f"Sent AI-composed re-engagement message to inactive user {user.user_id}: {message_to_send}")
         
         # Update last_interaction_timestamp to prevent immediate re-sending
         user.last_interaction_timestamp = timezone.now()
         user.save()
         
-    logger.info(f"Finished checking inactive users. {inactive_users.count()} re-engagement messages sent.")
+    logger.info(f"Finished checking inactive users. {inactive_users.count()} re-engagement attempts made.")

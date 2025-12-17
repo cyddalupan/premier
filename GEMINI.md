@@ -75,7 +75,11 @@ For managing the chat flow and message processing, a robust queuing mechanism wi
 All incoming chat messages from Messenger will be received and processed through a single, designated entry point. This ensures consistency and simplifies maintenance. The receiving component should have minimal logic, primarily handling the initial receipt and immediate queuing of the message for further processing.
 
 ## AI Interaction Layer
-A dedicated, shared module will handle all interactions with Artificial Intelligence models. This module will provide a standardized interface for various AI tasks (e.g., quick replies, summarization, exam grading, content generation). It will abstract away the specifics of different AI models, allowing for easy interchangeability and ensuring that distinct functions are available for different model types or purposes. All parts of the application requiring AI capabilities must utilize this centralized interaction layer, leveraging `OPEN_AI_TOKEN` from the `.env` file for authentication.
+A dedicated, shared module will handle all interactions with Artificial Intelligence models. This module will provide a standardized interface for various AI tasks (e.g., quick replies, summarization, exam grading, content generation). It will abstract away the specifics of different AI models, allowing for easy interchangeability and ensuring that distinct functions are available for different model types or purposes. All parts of the application requiring AI capabilities must utilize this centralized AI interaction layer, leveraging `OPEN_AI_TOKEN` from the `.env` file for authentication.
+
+### AI Models Used
+-   **General AI Tasks (Quick Replies, Summarization):** `gpt-5-mini`
+-   **Exam Grading:** `gpt-5.2`
 
 ## Logic Separation
 To maintain a clean and modular codebase, the complex business logic associated with processing chat messages will be externalized into separate functions and files. The initial chat message ingestion point will primarily delegate tasks to these external functions, keeping the ingestion layer lean and focused. This approach supports reusability, testability, and adherence to the Single Responsibility Principle.

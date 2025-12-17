@@ -2,6 +2,8 @@ import os
 import openai
 import logging
 from django.conf import settings
+from . import prompts
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -24,10 +26,10 @@ class AIIntegration:
         try:
             # Example: Use OpenAI's chat completion for a quick reply
             response = openai.chat.completions.create(
-                model="gpt-3.5-turbo", # Or a more "nano" model if available and suitable
+                model="gpt-5-mini", # Or a more "nano" model if available and suitable
                 messages=[
-                    {"role": "system", "content": "You are a helpful assistant providing very brief replies."},
-                    {"role": "user", "content": f"Based on this conversation: {conversation_history}, provide a quick, one-sentence reply."}
+                    {"role": "system", "content": prompts.QUICK_REPLY_SYSTEM_PROMPT},
+                    {"role": "user", "content": prompts.QUICK_REPLY_USER_PROMPT_TEMPLATE.format(conversation_history=conversation_history)}
                 ],
                 max_tokens=50,
                 temperature=0.7,
@@ -54,15 +56,15 @@ class AIIntegration:
         # Placeholder for actual AI call
         try:
             prompt_messages = [
-                {"role": "system", "content": "You are an AI assistant that summarizes conversations concisely."},
+                {"role": "system", "content": prompts.SUMMARIZE_SYSTEM_PROMPT},
             ]
             if existing_summary:
-                prompt_messages.append({"role": "user", "content": f"Here is a previous summary: {existing_summary}. Summarize the following new conversation chunk and merge it with the previous summary, keeping it under 1000 characters: {conversation_chunk}"})
+                prompt_messages.append({"role": "user", "content": prompts.SUMMARIZE_USER_PROMPT_WITH_EXISTING_SUMMARY_TEMPLATE.format(existing_summary=existing_summary, conversation_chunk=conversation_chunk)})
             else:
-                prompt_messages.append({"role": "user", "content": f"Summarize the following conversation chunk under 1000 characters: {conversation_chunk}"})
+                prompt_messages.append({"role": "user", "content": prompts.SUMMARIZE_USER_PROMPT_WITHOUT_EXISTING_SUMMARY_TEMPLATE.format(conversation_chunk=conversation_chunk)})
 
             response = openai.chat.completions.create(
-                model="gpt-3.5-turbo",
+                model="gpt-5-mini",
                 messages=prompt_messages,
                 max_tokens=200, # Adjust based on expected summary length and input
                 temperature=0.7,
@@ -91,28 +93,11 @@ class AIIntegration:
         # Placeholder for actual AI call
         try:
             # Construct a detailed prompt for grading
-            prompt = f"""
-            Grade the following exam answer provided by a student based on the given question, expected answer, and rubric criteria.
-            Provide feedback for Grammar/Syntax, Legal Basis, Application, and Conclusion. Assign a score out of 100.
-
-            Question: {question_text}
-            Student Answer: {user_answer}
-            Expected Answer/Key Points: {expected_answer}
-            Rubric Criteria: {rubric_criteria}
-
-            Please format your response as a JSON object with the following keys:
-            {{
-                "grammar_syntax_feedback": "...",
-                "legal_basis_feedback": "...",
-                "application_feedback": "...",
-                "conclusion_feedback": "...",
-                "score": int (1-100)
-            }}
-            """
+            prompt = prompts.GRADE_EXAM_USER_PROMPT_TEMPLATE.format(question_text=question_text, user_answer=user_answer, expected_answer=expected_answer, rubric_criteria=rubric_criteria)
             response = openai.chat.completions.create(
-                model="gpt-4", # Use a more capable model for grading
+                model="gpt-5.2", # Use a more capable model for grading
                 messages=[
-                    {"role": "system", "content": "You are a legal expert AI assistant tasked with grading law exam answers objectively and providing constructive feedback."},
+                    {"role": "system", "content": prompts.GRADE_EXAM_SYSTEM_PROMPT},
                     {"role": "user", "content": prompt}
                 ],
                 max_tokens=500,
@@ -132,3 +117,37 @@ class AIIntegration:
         except Exception as e:
             logger.error(f"Unexpected error during exam grading: {e}")
             return {"error": "An unexpected error occurred."}
+
+    def generate_re_engagement_message(self, user_id, current_stage, user_summary):
+        """
+        Generates a re-engagement message using a general AI model.
+        :param user_id: The ID of the user.
+        :param current_stage: The current stage of the user (e.g., ONBOARDING, MARKETING).
+        :param user_summary: The AI-generated summary of the user's persona and history.
+        :return: A generated re-engagement message.
+        """
+        logger.info(f"Generating re-engagement message for user {user_id} in stage {current_stage}")
+        try:
+            user_prompt = prompts.RE_ENGAGEMENT_USER_PROMPT_TEMPLATE.format(
+                current_stage=current_stage,
+                user_summary=user_summary if user_summary else "No summary available."
+            )
+            response = openai.chat.completions.create(
+                model="gpt-5-mini",
+                messages=[
+                    {"role": "system", "content": prompts.RE_ENGAGEMENT_SYSTEM_PROMPT},
+                    {"role": "user", "content": user_prompt}
+                ],
+                max_tokens=100, # Keep re-engagement messages concise
+                temperature=0.8, # More creative responses
+            )
+            message = response.choices[0].message.content.strip()
+            logger.info(f"Generated re-engagement message for {user_id}: {message}")
+            return message
+        except openai.OpenAIError as e:
+            logger.error(f"OpenAI API error during re-engagement message generation: {e}")
+            return "Hello! We missed you. How can I help you today?" # Fallback message
+        except Exception as e:
+            logger.error(f"Unexpected error during re-engagement message generation: {e}")
+            return "Hi there! Just checking in. Let me know if you have any questions." # Fallback message
+

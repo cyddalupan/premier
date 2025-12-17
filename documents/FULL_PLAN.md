@@ -42,6 +42,7 @@ Stores state and memory.
     •   first_name: User's name.
     •   current_stage: (Enum: ONBOARDING, MARKETING, MOCK_EXAM, GENERAL_BOT).
     •   exam_question_counter: (Int: 0-8) To track progress during the exam.
+    •   last_question_id_asked: (FK to exam_questions) Stores the ID of the last question presented to the user during the mock exam.
     •   summary: (Text) The AI-generated summary of the user's persona and history.
     •   last_admin_reply_timestamp: (DateTime) For the 10-minute pause logic.
     •   last_interaction_timestamp: (DateTime) To trigger follow-up messages.
@@ -60,6 +61,18 @@ Permanent record of all messages.
     •   message_content: Text body.
     •   timestamp: Time sent.
 
+D. Exam Results Table (exam_results)
+Stores the results of each mock exam question.
+    •   id (PK)
+    •   user_id: FK to Users.
+    •   question_id: FK to Question Bank (exam_questions).
+    •   score: (Int) Numerical score for the answer (e.g., 1-100).
+    •   grammar_feedback: (Text) Feedback on grammar/syntax.
+    •   legal_basis_feedback: (Text) Feedback on legal basis.
+    •   application_feedback: (Text) Feedback on application of law.
+    •   conclusion_feedback: (Text) Feedback on correctness of conclusion.
+    •   timestamp: Time the result was recorded.
+
 3. Conversation Lifecycle (The Flow)
 Stage 1: Onboarding & Introduction
     •   Goal: Capture user interest and basic info.
@@ -72,7 +85,7 @@ Stage 2: Pre-Exam Marketing
 Stage 3: The Mock Exam (The Core Feature)
     •   Loop: Repeat 8 times.
     •   Process:
-    1   AI selects a random question from exam_questions.
+    1   AI selects a random question from exam_questions and stores its ID in the user's `last_question_id_asked` field.
     2   User answers.
     3   AI Analysis (The 5-Point Feedback System):
     ▪   Grammar/Syntax: Checks for professional legal tone.
@@ -80,6 +93,7 @@ Stage 3: The Mock Exam (The Core Feature)
     ▪   Application: How the law was applied to facts.
     ▪   Conclusion: Whether the final answer is correct.
     ▪   Score: A numerical rating (1-100% or Bar scale).
+    4   Save the question ID, score, and all 5 feedback points to the `Exam Results Table`.
     •   Transition: After 8 questions, move to Stage 4.
 Stage 4: Conversion & General Bot
     •   Goal: Convert to website registration.
@@ -99,12 +113,13 @@ Trigger: Scheduled cron job checking last_interaction_timestamp. If inactive for
 5. Technical Implementation Steps (Summary)
     1.  **AI Integration Module:** Design and implement shared functions for connecting to various AI models (e.g., for quick replies, summarization, exam grading, content generation). This module will abstract away model specifics, allowing for easy interchangeability and providing distinct functions for different model types or purposes, leveraging `OPEN_AI_TOKEN` from the `.env` file for authentication.
     2.  Setup Webhook: Connect to Facebook Messenger API. Subscribe to messages, messaging_postbacks, and message_echoes.
-    3.  Database Init: Create the tables listed above.
+    3.  Database Init: Created the necessary database tables and imported initial question data. (See `documents/DATABASE.md` for schema details).
     4.  Admin Logic: Implement the middleware to check the 10-minute timer.
     5.  Exam Logic: Build the function to fetch random questions and the Prompt Engineering for the "5-Point Feedback."
     6.  Context Logic: Implement the "Sliding Window" algorithm with the refined summarization rules (triggering at >20 messages, summarizing oldest 14, merging with existing summary, and ensuring the new summary is <1,000 characters).
     7.  Queuing System: Set up a task queuing system (e.g., Celery) for asynchronous message processing and handling the detailed message flow.
     8.  Quick Reply Implementation: Develop the nano-model quick reply mechanism, ensuring it respects the exam stage exclusion.
     9.  Testing: Specifically test the Admin interruption to ensure the AI stays silent.
-    10. Modular Design: Implement each conversational stage (Onboarding, Marketing, Mock Exam, General Bot) as separate functions, ideally in their own files, to promote cleaner code, improve maintainability, and facilitate isolated unit testing.
+    10. **Cron Entry Point:** Implement a single URL endpoint (`/chat/cron/dispatch/`) that will serve as the hourly trigger for all scheduled cron tasks, including re-engagement messages and data collection. This endpoint will internally dispatch specific tasks to the queuing system.
+    11. Modular Design: Implement each conversational stage (Onboarding, Marketing, Mock Exam, General Bot) as separate functions, ideally in their own files, to promote cleaner code, improve maintainability, and facilitate isolated unit testing.
 

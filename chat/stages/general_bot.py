@@ -14,7 +14,7 @@ def handle_general_bot_stage(user, messaging_event):
 
     # Initial message after completing the exam
     if user.exam_question_counter == 0:
-        response_messages.append(f"Congratulations, {user.first_name}! You've completed the mock exam. To get full access to our comprehensive materials and more practice exams, register here: [Registration Link Placeholder]!")
+        response_messages.append(f"Congratulations, {user.first_name}! You've completed the mock exam. To get full access to our comprehensive materials and more practice exams, register here: https://www.premier.classapparelph.com/register!")
         response_messages.append("I can now act as your General Legal Assistant or Mentor. How can I assist you further today?")
         user.exam_question_counter = -1 # Mark as having sent the initial message for this stage
         user.save()
@@ -37,4 +37,4 @@ def handle_general_bot_stage(user, messaging_event):
         else:
             response_messages.append("I'm here to help! What's on your mind?")
     
-    return "\n".join(response_messages) if response_messages else None
+    return response_messages
