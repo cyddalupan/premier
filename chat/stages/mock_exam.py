@@ -1,6 +1,6 @@
 import logging
 from ..models import User, Question
-from ..utils import ai_integration_service, get_random_exam_question
+from ..utils import ai_integration_service, get_random_exam_question, generate_persuasion_messages
 
 logger = logging.getLogger(__name__)
 
@@ -11,6 +11,17 @@ def handle_mock_exam_stage(user, messaging_event):
     logger.info(f"Handling MOCK_EXAM stage for user {user.user_id}, counter: {user.exam_question_counter}")
     message_text = messaging_event.get('message', {}).get('text')
     response_messages = []
+
+    # Simple opt-out detection for now (can be enhanced with AI intent later)
+    if message_text and any(keyword in message_text.lower() for keyword in ["stop", "quit", "end exam", "i'm done", "i am done"]):
+        persuasion = generate_persuasion_messages(user, 'exam_opt_out')
+        response_messages.extend(persuasion)
+        user.current_stage = 'GENERAL_BOT'
+        user.exam_question_counter = 0
+        user.last_question_id_asked = None
+        user.save()
+        logger.info(f"User {user.user_id} opted out of mock exam and transitioned to GENERAL_BOT stage.")
+        return response_messages
 
     if user.exam_question_counter == 0:
         # Start of the exam, send first question
@@ -45,9 +56,9 @@ def handle_mock_exam_stage(user, messaging_event):
             user_id=user.user_id,
             question_text=current_question.question_text,
             user_answer=message_text,
-            expected_answer=current_question.expected_answer,
-            rubric_criteria=current_question.rubric_criteria
+            expected_answer=current_question.expected_answer
         )
+        logger.info(f"Received feedback from AI integration service: {feedback}") # Added log
 
         feedback_message = "Here's the feedback on your answer:\n"
         exam_score = None
@@ -104,14 +115,33 @@ def handle_mock_exam_stage(user, messaging_event):
                 user.exam_question_counter = 0
                 user.last_question_id_asked = None
                 user.save()
+                # Persuasion messages for early exam end due to no more questions
+                persuasion = generate_persuasion_messages(user, 'exam_opt_out') # Using opt_out context as it's an unexpected end
+                response_messages.extend(persuasion)
         else:
-            # Exam finished, transition to next stage
+            # Exam finished, generate strength assessment and then transition to next stage
             response_messages.append("You have completed all 8 mock exam questions! Great job!")
+            
+            # Generate and append strength assessment
+            strength_assessment_message = ai_integration_service.generate_strength_assessment(user)
+            response_messages.append(strength_assessment_message)
+
+            # Log the strength assessment to ChatLog
+            from chat.models import ChatLog # Import locally to avoid circular dependency
+            ChatLog.objects.create(
+                user=user,
+                sender_type='SYSTEM_AI',
+                message_content=strength_assessment_message
+            )
+
             user.current_stage = 'GENERAL_BOT' # Transition to Conversion & General Bot
             user.exam_question_counter = 0
             user.last_question_id_asked = None
             user.save()
-            logger.info(f"User {user.user_id} completed mock exam and transitioned to GENERAL_BOT stage.")
+            logger.info(f"User {user.user_id} completed mock exam, received strength assessment, and transitioned to GENERAL_BOT stage.")
+            # Add persuasion messages for exam completion
+            persuasion = generate_persuasion_messages(user, 'exam_finished')
+            response_messages.extend(persuasion)
     else:
         # Should not happen, but a fallback
         response_messages.append("It seems there was an issue with the exam. Moving to general chat.")
@@ -119,5 +149,8 @@ def handle_mock_exam_stage(user, messaging_event):
         user.exam_question_counter = 0
         user.last_question_id_asked = None
         user.save()
+        # Persuasion messages for unexpected exam end
+        persuasion = generate_persuasion_messages(user, 'exam_opt_out') # Using opt_out context as it's an unexpected end
+        response_messages.extend(persuasion)
     
     return response_messages

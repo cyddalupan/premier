@@ -9,18 +9,35 @@ class User(models.Model):
         ('GENERAL_BOT', 'General Bot'),
     ]
 
+    # Enum for onboarding_sub_stage
+    ONBOARDING_SUB_STAGE_CHOICES = [
+        ('ASK_NAME', 'Ask Name'),
+        ('ASK_ACADEMIC_STATUS', 'Ask Academic Status'),
+    ]
+
+
     user_id = models.CharField(max_length=100, primary_key=True)  # Facebook PSID
-    first_name = models.CharField(max_length=255)
+    first_name = models.CharField(max_length=255, blank=True, null=True)
     current_stage = models.CharField(
         max_length=50,
         choices=STAGE_CHOICES,
         default='ONBOARDING',
     )
+    onboarding_sub_stage = models.CharField(
+        max_length=50,
+        choices=ONBOARDING_SUB_STAGE_CHOICES,
+        null=True, # Allow null when not in ONBOARDING stage or at the very beginning
+        blank=True,
+    )
     exam_question_counter = models.IntegerField(default=0)  # 0-8
     last_question_id_asked = models.ForeignKey('Question', on_delete=models.SET_NULL, null=True, blank=True)
+    academic_status = models.CharField(max_length=255, blank=True, null=True)
     summary = models.TextField(blank=True, null=True)  # AI-generated summary
     last_admin_reply_timestamp = models.DateTimeField(blank=True, null=True)  # For 10-minute pause logic
     last_interaction_timestamp = models.DateTimeField(blank=True, null=True)  # To trigger follow-up messages
+    re_engagement_stage_index = models.IntegerField(default=0, blank=True, null=True) # Tracks the current re-engagement stage (0 for none, 1 for stage 1, etc.)
+    last_re_engagement_message_sent_at = models.DateTimeField(blank=True, null=True) # Timestamp of when the last re-engagement message was sent
+    is_registered_website_user = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.first_name} ({self.user_id})"
@@ -40,7 +57,7 @@ class Question(models.Model):
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
     question_text = models.TextField()
     expected_answer = models.TextField()
-    rubric_criteria = models.TextField()
+
 
     def __str__(self):
         return f"{self.category}: {self.question_text[:50]}..."

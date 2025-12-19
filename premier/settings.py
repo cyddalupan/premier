@@ -81,6 +81,7 @@ load_dotenv()
 FACEBOOK_PAGE_ACCESS_TOKEN = os.getenv('FACEBOOK_PAGE_ACCESS_TOKEN')
 MESSENGER_VERIFY_TOKEN = os.getenv('MESSENGER_VERIFY_TOKEN')
 OPEN_AI_TOKEN = os.getenv('OPEN_AI_TOKEN')
+FACEBOOK_APP_ID = os.getenv('FACEBOOK_APP_ID') # Required for differentiating bot echoes from admin messages
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
@@ -173,7 +174,7 @@ LOGGING = {
     'loggers': {
         'chat': {
             'handlers': ['console'],
-            'level': 'INFO',
+            'level': 'DEBUG',
             'propagate': False,
         },
         'django': {

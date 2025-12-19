@@ -6,38 +6,58 @@ logger = logging.getLogger(__name__)
 def handle_onboarding_stage(user, messaging_event):
     """
     Handles the logic for the ONBOARDING stage.
+    Implements a clear two-step process: first, capture the user's name,
+    then capture their academic status. The stage transitions to MARKETING
+    only after academic status is successfully provided.
+    :param user: The User object.
+    :param messaging_event: The raw messaging event from Facebook.
     """
-    logger.info(f"Handling ONBOARDING stage for user {user.user_id}")
+    logger.info(f"Handling ONBOARDING stage for user {user.user_id}, sub_stage: {user.onboarding_sub_stage}")
     message_text = messaging_event.get('message', {}).get('text')
-    response = None
+    response_messages = []
 
-    if user.first_name == "New User":
-        # Check if the user has already been prompted for their name in a previous interaction
-        # We can infer this if last_interaction_timestamp is not None and first_name is still "New User"
-        # However, for simplicity and to directly address the test, let's assume the first text message
-        # after initial greeting is the name.
-        if message_text and message_text.strip(): # User is responding with text, assume it's their name
-            user.first_name = message_text.strip().split(' ')[0] # Take first word as name
+    # If first_name is not set, we need to ask for it.
+    if not user.first_name:
+        if user.onboarding_sub_stage == 'ASK_NAME' and message_text and message_text.strip():
+            user.first_name = message_text.strip()
+            user.onboarding_sub_stage = 'ASK_ACADEMIC_STATUS' # Move to next sub-stage
             user.save()
-            response = f"Nice to meet you, {user.first_name}! What is your current academic status or focus area in law (e.g., 1st year, Bar examinee, aspiring lawyer)?"
+            logger.info(f"User {user.user_id} name set to: {user.first_name}.")
+            response_messages.append(f"Nice to meet you, {user.first_name}! What is your current academic status or focus area in law (e.g., 1st year, Bar examinee, aspiring lawyer)?")
         else:
-            # This handles initial contact or non-text input from a new user
-            response = "Hello! I'm the Law Review Center AI Chatbot, your personal study assistant. What should I call you?"
+            # If sub_stage is not ASK_NAME, or message_text is empty, ask for the name
+            user.onboarding_sub_stage = 'ASK_NAME'
+            user.save()
+            response_messages.append("Hello! I'm the Law Review Center AI Chatbot, your personal study assistant. What should I call you?")
+
+    # If first_name is set, but academic_status is not, we need to ask for academic status.
+    elif not user.academic_status:
+        if user.onboarding_sub_stage == 'ASK_ACADEMIC_STATUS' and message_text and message_text.strip():
+            user.academic_status = message_text.strip()
+            user.current_stage = 'MARKETING' # Transition to next main stage
+            user.onboarding_sub_stage = None # Reset sub-stage
+            user.save()
+            logger.info(f"User {user.user_id} academic status set to: {user.academic_status}. Transitioning to MARKETING stage.")
+            response_messages.append(f"Got it! So you are focusing on {user.academic_status}. Let's see what I can do for you.")
+        else:
+            # If sub_stage is not ASK_ACADEMIC_STATUS, or message_text is empty, ask for academic status
+            user.onboarding_sub_stage = 'ASK_ACADEMIC_STATUS'
+            user.save()
+            response_messages.append(f"Hello {user.first_name}! Could you please tell me your academic status or focus area in law?")
+
+    # Onboarding is fully complete (name and academic status are set)
     else:
-        # User has provided their name, now expecting academic status/focus
-        if message_text and message_text.strip():
-            # For now, just acknowledge and transition to next stage
-            # In a real scenario, we might save this info to user model
-            response = f"Got it! So you are focusing on {message_text}. Let's see what I can do for you."
-            user.current_stage = 'MARKETING' # Transition to the next stage
-            user.save()
-        else:
-            response = f"Hello {user.first_name}! Could you please tell me your academic status or focus area in law?"
+        user.current_stage = 'MARKETING' # Ensure main stage is MARKETING
+        user.onboarding_sub_stage = None # Reset sub-stage
+        user.save()
+        logger.info(f"User {user.user_id} already has name and academic status. Transitioning to MARKETING stage.")
+        response_messages.append(f"Welcome back, {user.first_name}! You're all set. How can I help you today?")
     
-    if response:
-        ChatLog.objects.create(
-            user=user,
-            sender_type='SYSTEM_AI',
-            message_content=response
-        )
-    return [response] if response else []
+    for response in response_messages:
+        if response:
+            ChatLog.objects.create(
+                user=user,
+                sender_type='SYSTEM_AI',
+                message_content=response
+            )
+    return response_messages

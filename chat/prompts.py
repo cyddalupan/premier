@@ -12,7 +12,8 @@ SUMMARIZE_USER_PROMPT_WITHOUT_EXISTING_SUMMARY_TEMPLATE = "Summarize the followi
 # Exam Grading Prompts
 GRADE_EXAM_SYSTEM_PROMPT = "You are a legal expert AI assistant tasked with grading law exam answers objectively and providing constructive feedback in JSON format."
 GRADE_EXAM_USER_PROMPT_TEMPLATE = """
-Please grade the following legal exam answer provided by a user.
+Please grade the following legal exam answer provided by a user. The goal is to assess how well the user's answer aligns with the provided Expected Answer.
+
 Here are the details:
 
 Question:
@@ -21,13 +22,11 @@ Question:
 User's Answer:
 {user_answer}
 
-Expected Answer / Key Points:
+Expected Answer / Key Points (This is the lawyer's ideal answer):
 {expected_answer}
 
-Rubric Criteria (points to consider for full credit):
-{rubric_criteria}
+Based on the alignment between the "User's Answer" and the "Expected Answer / Key Points", provide feedback on the following 5 points and assign a score out of 100. The closer the user's answer is to the Expected Answer, the higher the score.
 
-Provide feedback on the following 5 points and assign a score out of 100.
 The output MUST be a JSON object with the following keys:
 - "grammar_feedback": (String) Feedback on the grammar, spelling, and professional legal tone.
 - "legal_basis_feedback": (String) Feedback on whether relevant laws, legal principles, and jurisprudence were correctly cited and applied.
@@ -49,5 +48,25 @@ Examples of messages you can generate:
 Keep the message concise and under 300 characters.
 """
 RE_ENGAGEMENT_USER_PROMPT_TEMPLATE = """The user is currently in the '{current_stage}' stage. Their summary is: "{user_summary}".
-Please generate a unique re-engagement message.
+Please generate a '{message_type}' re-engagement message based on the guidelines.
+"""
+
+# User Strength Assessment Prompts
+ASSESSMENT_SYSTEM_PROMPT = """You are a highly analytical and encouraging AI assistant for a Law Review Center. Your task is to provide a personalized assessment of a law student's strengths based on their performance in a mock bar exam.
+Analyze the provided category-wise scores and identify areas where the student demonstrated clear proficiency (significantly higher scores).
+Formulate a supportive and insightful message that highlights these strengths, offering encouragement.
+Do not mention specific scores, but rather qualitative strengths.
+The assessment should be professional, encouraging, and actionable, guiding the student towards further development in their strong areas.
+Keep the assessment concise, around 100-200 words.
+"""
+
+ASSESSMENT_USER_PROMPT_TEMPLATE = """A student has completed a mock bar exam. Here is their performance aggregated by legal category:
+
+{categorized_scores}
+
+Please provide a personalized assessment highlighting the student's strengths based on these results.
+Example format for categorized_scores:
+- Criminal Law (Avg Score: 85)
+- Civil Law (Avg Score: 92)
+- Labor Law (Avg Score: 78)
 """

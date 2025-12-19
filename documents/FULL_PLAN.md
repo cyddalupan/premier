@@ -14,32 +14,33 @@ The following steps outline the sequential processing of incoming messages, orch
             *   Update the user's data, noting that the admin has replied.
             *   Update the user's `last_admin_reply_timestamp`.
             *   **STOP Processing** for this message.
-    4.  **Get User Data:** Retrieve comprehensive user data based on the `fb_id`.
-    5.  **Save User Message:** Save the incoming user's message to the Chat Logs (with sender_type: USER).
-    6.  **Admin Active Check:** Check if an admin has replied to this user within the last 10 minutes (using `last_admin_reply_timestamp`).
+    5.  **Get User Data:** Retrieve comprehensive user data based on the `fb_id`.
+    6.  **Capture User Name (if new user):** If the user's `first_name` is not already set, capture it from the incoming message content.
+    7.  **Save User Message:** Save the incoming user's message to the Chat Logs (with sender_type: USER).
+    8.  **Admin Active Check:** Check if an admin has replied to this user within the last 10 minutes (using `last_admin_reply_timestamp`).
         *   **If Yes:** **STOP Processing** for this message.
-    7.  **Determine User Stage:** Based on user data, identify the `current_stage` (e.g., ONBOARDING, MARKETING, MOCK_EXAM, GENERAL_BOT).
-    8.  **Quick Reply Logic:**
+    9.  **Determine User Stage:** Based on user data, identify the `current_stage` (e.g., ONBOARDING, MARKETING, MOCK_EXAM, GENERAL_BOT).
+    10. **Quick Reply Logic:**
         *   **If the user is NOT in the Mock Exam stage:**
             *   Generate and send a quick reply using a nano model, incorporating the current prompt and the last 3 messages.
-    9.  **Select Function:** Choose the appropriate function/handler based on the user's `current_stage`. Each stage has distinct rules and processing logic.
-    10. **Generate & Save Replies:** The selected function processes the message, potentially using a mini reasoning model, to generate one or more replies. Each generated reply is saved to the Chat Logs (with sender_type: SYSTEM_AI).
-    11. **Context Summarization Check:** After all replies are generated and saved, check if the total number of uns summarized chat messages (USER, SYSTEM_AI, ADMIN_MANUAL) for this user exceeds 20.
+    11. **Select Function:** Choose the appropriate function/handler based on the user's `current_stage`. Each stage has distinct rules and processing logic.
+    12. **Generate & Save Replies:** The selected function processes the message, potentially using a mini reasoning model, to generate one or more replies. Each generated reply is saved to the Chat Logs (with sender_type: SYSTEM_AI).
+    13. **Context Summarization Check:** After all replies are generated and saved, check if the total number of uns summarized chat messages (USER, SYSTEM_AI, ADMIN_MANUAL) for this user exceeds 20.
         *   **If Yes:** Summarize the oldest 14 uns summarized messages, merge with the existing user summary, and update the user's summary field (ensuring it is less than 1,000 characters).
 
 A. The "Manual Override" (Admin Pause)
-This mechanism prevents the AI from interrupting a human admin during a live chat. Its detailed operation, including the handling of admin echoes and the 10-minute pause logic, is described in the "Message Processing Flow" (Steps 3 & 6).
+This mechanism prevents the AI from interrupting a human admin during a live chat. Its detailed operation, including the handling of admin echoes and the 10-minute pause logic, is described in the "Message Processing Flow" (Steps 3 & 8).
 B. Context Management (Memory Optimization)
-This mechanism handles token limits and maintains conversation continuity by dynamically summarizing chat history. The detailed "Sliding Window" algorithm, including its trigger conditions and summarization process, is described in the "Message Processing Flow" (Step 11).
+This mechanism handles token limits and maintains conversation continuity by dynamically summarizing chat history. The detailed "Sliding Window" algorithm, including its trigger conditions and summarization process, is described in the "Message Processing Flow" (Step 13).
 
 C. Quick Reply Mechanism
-This mechanism provides an immediate, concise response using a nano model. Its conditions for activation (user not in Mock Exam stage) and detailed process are described in the "Message Processing Flow" (Step 8).
+This mechanism provides an immediate, concise response using a nano model. Its conditions for activation (user not in Mock Exam stage) and detailed process are described in the "Message Processing Flow" (Step 10).
 
 2. Database Schema Structure
 A. Users Table (users)
 Stores state and memory.
     •   user_id (PK): Facebook PSID.
-    •   first_name: User's name.
+    •   first_name: User's name, captured from their first message if not already known.
     •   current_stage: (Enum: ONBOARDING, MARKETING, MOCK_EXAM, GENERAL_BOT).
     •   exam_question_counter: (Int: 0-8) To track progress during the exam.
     •   last_question_id_asked: (FK to exam_questions) Stores the ID of the last question presented to the user during the mock exam.
@@ -51,8 +52,8 @@ Pool for the Mock Exam.
     •   id (PK)
     •   category: (e.g., Criminal Law, Civil Law).
     •   question_text: The actual scenario.
-    •   expected_answer: The model answer/key points.
-    •   rubric_criteria: Specific points required for full credit.
+    •   expected_answer: The lawyer's answer/key points.
+        *   **Scoring Note:** The closer the user's answer is to this `expected_answer`, the higher the score.
 C. Chat Logs (chat_history)
 Permanent record of all messages.
     •   id (PK)
@@ -94,7 +95,14 @@ Stage 3: The Mock Exam (The Core Feature)
     ▪   Conclusion: Whether the final answer is correct.
     ▪   Score: A numerical rating (1-100% or Bar scale).
     4   Save the question ID, score, and all 5 feedback points to the `Exam Results Table`.
-    •   Transition: After 8 questions, move to Stage 4.
+    •   **User Strength Assessment:**
+        1   Analyze the user's `exam_results` to determine their performance across different legal `category` types.
+        2   Identify categories where the user demonstrated significant strength (e.g., consistently high scores).
+        3   Formulate a prompt for `gpt-5.2` that includes the identified strengths and requests a personalized assessment message.
+        4   Generate the assessment message using `gpt-5.2` (model `gpt-5.2`).
+        5   Send this detailed assessment message to the user via the standardized reply function.
+        6   Save the AI-generated assessment message to the `Chat Logs` (sender_type: SYSTEM_AI).
+    •   Transition: After 8 questions and the strength assessment, move to Stage 4.
 Stage 4: Conversion & General Bot
     •   Goal: Convert to website registration.
     •   Action:
@@ -102,7 +110,13 @@ Stage 4: Conversion & General Bot
     ◦   Switch role to General Legal Assistant/Mentor (answers general queries, gives motivation).
 
 4. Re-engagement Strategy (Follow-up Messages)
-Trigger: Scheduled cron job checking last_interaction_timestamp. If inactive for X hours/days, send one of these (randomized):
+Trigger: Scheduled cron job checking last_interaction_timestamp. Follow-up messages are sent at specific intervals of inactivity, ensuring a multi-stage re-engagement approach:
+    •   **Stage 1:** 1 to 2 hours after the last interaction.
+    •   **Stage 2:** 5 to 6 hours after the last interaction.
+    •   **Stage 3:** 11 to 12 hours after the last interaction.
+    •   **Stage 4:** 21 to 22 hours after the last interaction.
+
+If inactive for any of these specific intervals, one of these (randomized) messages will be sent:
     1   Trivia/Fun Fact: "Did you know [Obscure Law] is still valid?"
     2   Giveaway/Promo: "We are giving away a free reviewer PDF..."
     3   Legal Maxim of the Day: "Explain 'Dura lex sed lex' in your own words."

@@ -80,6 +80,7 @@ A dedicated, shared module will handle all interactions with Artificial Intellig
 ### AI Models Used
 -   **General AI Tasks (Quick Replies, Summarization):** `gpt-5-mini`
 -   **Exam Grading:** `gpt-5.2`
+-   **Note on AI Model Parameters:** The `temperature` parameter has been removed from all AI model configurations (e.g., in `chat/ai_integration.py`). This is because not all models consistently support the `temperature` parameter, and some may only allow a default value of 1. Removing it ensures broader compatibility and prevents `invalid_request_error` issues.
 
 ## Logic Separation
 To maintain a clean and modular codebase, the complex business logic associated with processing chat messages will be externalized into separate functions and files. The initial chat message ingestion point will primarily delegate tasks to these external functions, keeping the ingestion layer lean and focused. This approach supports reusability, testability, and adherence to the Single Responsibility Principle.
@@ -88,6 +89,9 @@ To maintain a clean and modular codebase, the complex business logic associated 
 Adhering to Test-Driven Development (TDD) principles is mandatory for this project.
 *   **Unit Tests:** Comprehensive unit tests must be written for all new code, especially for the externalized logic functions. These tests should cover various scenarios and edge cases to ensure reliability and correctness.
 *   **Regression Tests:** All significant unit tests will be retained as permanent regression tests to prevent future code changes from introducing new bugs or reintroducing old ones.
+
+### Modifying Existing Tests
+When changes to the application's logic necessitate updates to existing tests, prioritize making granular modifications over wholesale deletions of large test blocks or classes. This approach helps maintain a clear history of changes and reduces the risk of inadvertently removing valid test coverage. If an existing test or a portion of it becomes completely irrelevant due to a fundamental change in the underlying feature or logic, then it should be removed. However, the default strategy should always be to modify existing tests to reflect the new expected behavior, ensuring continued and robust regression coverage.
 
 ## Reply Mechanism
 A single, standardized function will be responsible for sending replies back to the user. This function will encapsulate the necessary logic for interacting with the Messenger API for sending messages. All parts of the application, including different chat stages, external logic functions, and cron triggers, must utilize this centralized reply function to ensure uniform message delivery and simplify potential future changes to the sending mechanism.
