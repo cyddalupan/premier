@@ -69,7 +69,7 @@ Stores the results of each mock exam question.
 3. Conversation Lifecycle (The Flow)
 Stage 1: Onboarding & Introduction
     •   Goal: Capture user interest and basic info.
-    •   Action: AI introduces itself, asks for the student's year level/focus, and establishes a friendly rapport.
+    •   Action: AI introduces itself, captures the user's name, and establishes a friendly rapport.
 Stage 2: Pre-Exam Marketing
     •   Goal: Soft-sell the Review Center.
     •   Action:

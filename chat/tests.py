@@ -739,7 +739,7 @@ class OnboardingStageTest(TestCase):
     
     @patch('chat.stages.onboarding.AIIntegration.extract_name_from_message') # Corrected patch target
     @patch('chat.tasks.send_messenger_message')
-    def test_onboarding_captures_name_and_asks_academic_status(self, mock_send_messenger_message, mock_extract_name):
+    def test_onboarding_captures_name_and_transitions_to_marketing(self, mock_send_messenger_message, mock_extract_name):
         # First, simulate the bot asking for the name
         self.user.onboarding_sub_stage = 'ASK_NAME'
         self.user.save()
@@ -758,14 +758,14 @@ class OnboardingStageTest(TestCase):
 
         self.user.refresh_from_db()
         self.assertEqual(self.user.first_name, 'John Doe')
-        self.assertEqual(self.user.current_stage, 'ONBOARDING')
-        self.assertEqual(self.user.onboarding_sub_stage, 'ASK_ACADEMIC_STATUS')
-        self.assertIsNone(self.user.academic_status)
+        self.assertEqual(self.user.current_stage, 'MARKETING') # Should transition to MARKETING
+        self.assertIsNone(self.user.onboarding_sub_stage) # Sub-stage should be reset
+        self.assertIsNone(self.user.academic_status) # Academic status should remain None
 
         mock_extract_name.assert_called_once_with('My name is John Doe, nice to meet you!')
         mock_send_messenger_message.assert_called_once_with(
             self.user.user_id,
-            'Nice to meet you, John Doe! What is your current academic status or focus area in law (e.g., 1st year, Bar examinee, aspiring lawyer)?'
+            'Nice to meet you, John Doe! Ready to test your legal skills with a free AI-powered assessment exam? Just type \'yes\' or \'start\' to begin!'
         )
 
     @patch('chat.stages.onboarding.AIIntegration.extract_name_from_message') # Corrected patch target
@@ -826,62 +826,6 @@ class OnboardingStageTest(TestCase):
         mock_send_messenger_message.assert_called_once_with(
             self.user.user_id,
             "I couldn't quite catch your name. Could you please tell me your first name?"
-        )
-
-    @patch('chat.tasks.send_messenger_message')
-    def test_onboarding_re_asks_academic_status_if_empty_message(self, mock_send_messenger_message):
-        # Simulate user has provided name and bot is asking for academic status
-        self.user.first_name = 'Jane'
-        self.user.onboarding_sub_stage = 'ASK_ACADEMIC_STATUS'
-        self.user.save()
-
-        # Simulate user sending an empty message
-        user_message_event = {
-            'sender': {'id': self.user.user_id},
-            'recipient': {'id': 'PAGE_ID'},
-            'message': {'mid': 'm_empty_status', 'text': ''},
-            'timestamp': int(timezone.now().timestamp() * 1000)
-        }
-
-        process_messenger_message(user_message_event)
-
-        self.user.refresh_from_db()
-        self.assertEqual(self.user.first_name, 'Jane')
-        self.assertIsNone(self.user.academic_status)
-        self.assertEqual(self.user.current_stage, 'ONBOARDING')
-        self.assertEqual(self.user.onboarding_sub_stage, 'ASK_ACADEMIC_STATUS') # Should remain ASK_ACADEMIC_STATUS
-
-        mock_send_messenger_message.assert_called_once_with(
-            self.user.user_id,
-            'Hello Jane! Could you please tell me your academic status or focus area in law?'
-        )
-
-    @patch('chat.tasks.send_messenger_message')
-    def test_onboarding_completes_after_academic_status(self, mock_send_messenger_message):
-        # Simulate user has provided name and bot is asking for academic status
-        self.user.first_name = 'Jane'
-        self.user.onboarding_sub_stage = 'ASK_ACADEMIC_STATUS'
-        self.user.save()
-
-        # Simulate user providing academic status
-        user_message_event = {
-            'sender': {'id': self.user.user_id},
-            'recipient': {'id': 'PAGE_ID'},
-            'message': {'mid': 'm_status_provided', 'text': '1st year law student'},
-            'timestamp': int(timezone.now().timestamp() * 1000)
-        }
-
-        process_messenger_message(user_message_event)
-
-        self.user.refresh_from_db()
-        self.assertEqual(self.user.first_name, 'Jane')
-        self.assertEqual(self.user.academic_status, '1st year law student')
-        self.assertEqual(self.user.current_stage, 'MARKETING') # Should transition to MARKETING
-        self.assertIsNone(self.user.onboarding_sub_stage) # Sub-stage should be reset
-
-        mock_send_messenger_message.assert_called_once_with(
-            self.user.user_id,
-            'Got it! So you are focusing on 1st year law student. Let\'s see what I can do for you.'
         )
 
     @patch('chat.tasks.send_messenger_message')
