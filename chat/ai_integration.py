@@ -31,7 +31,7 @@ class AIIntegration:
                     {"role": "system", "content": prompts.QUICK_REPLY_SYSTEM_PROMPT},
                     {"role": "user", "content": prompts.QUICK_REPLY_USER_PROMPT_TEMPLATE.format(conversation_history=conversation_history)}
                 ],
-                max_tokens=50,
+                max_completion_tokens=50,
             )
             reply = response.choices[0].message.content.strip()
             logger.info(f"Generated quick reply: {reply}")
@@ -137,7 +137,7 @@ class AIIntegration:
                     {"role": "system", "content": prompts.RE_ENGAGEMENT_SYSTEM_PROMPT},
                     {"role": "user", "content": user_prompt}
                 ],
-                max_tokens=100, # Keep re-engagement messages concise
+                max_completion_tokens=100, # Keep re-engagement messages concise
             )
             message = response.choices[0].message.content.strip()
             logger.info(f"Generated re-engagement message for {user_id}: {message}")
@@ -211,25 +211,28 @@ class AIIntegration:
         logger.info(f"Attempting to extract name from message: {message_text}")
         try:
             response = openai.chat.completions.create(
-                model="gpt-5-mini", # Use a smaller model for this task
+                model="gpt-5.2", # Upgraded model for improved name extraction
                 messages=[
                     {"role": "system", "content": prompts.NAME_EXTRACTION_SYSTEM_PROMPT},
                     {"role": "user", "content": prompts.NAME_EXTRACTION_USER_PROMPT_TEMPLATE.format(message_text=message_text)}
                 ],
-                max_tokens=20 # A name should not be very long
+                max_completion_tokens=20 # A name should not be very long
             )
-            extracted_name = response.choices[0].message.content.strip()
-            if extracted_name and extracted_name.lower() != 'none':
+            extracted_name = response.choices[0].message.content
+            logger.info(f"Raw AI extracted name response: '{extracted_name}'") # Added for debugging
+            print(f"DEBUG: Raw AI extracted name response: '{extracted_name}'") # Explicit print for visibility
+            extracted_name = extracted_name.strip()
+            if extracted_name and extracted_name != '[NO_NAME]':
                 logger.info(f"Extracted name: {extracted_name}")
                 return extracted_name
             else:
-                logger.info("No name extracted by AI or AI returned 'None'.")
-                return None
+                logger.info("No name extracted by AI or AI returned '[NO_NAME]'. Falling back to 'User'.")
+                return "User"
         except openai.OpenAIError as e:
-            logger.error(f"OpenAI API error during name extraction: {e}")
-            return None
+            logger.error(f"OpenAI API error during name extraction: {e}. Falling back to 'User'.")
+            return "User"
         except Exception as e:
-            logger.error(f"Unexpected error during name extraction: {e}")
-            return None
+            logger.error(f"Unexpected error during name extraction: {e}. Falling back to 'User'.")
+            return "User"
 
 

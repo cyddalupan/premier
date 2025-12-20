@@ -55,7 +55,7 @@ class TestAIIntegration(TestCase):
         self.assertIn(self.user_stage, call_kwargs['messages'][1]['content'])
         self.assertIn(self.user_summary, call_kwargs['messages'][1]['content'])
         self.assertIn('Trivia/Fun Fact', call_kwargs['messages'][1]['content'])
-        self.assertEqual(call_kwargs['max_tokens'], 100)
+        self.assertEqual(call_kwargs['max_completion_tokens'], 100)
 
     @patch('openai.chat.completions.create', side_effect=openai.OpenAIError('API Error'))
     def test_generate_re_engagement_message_openai_error_fallback(self, mock_create):
@@ -958,69 +958,157 @@ class AIIntegrationNameExtractionTest(TestCase):
             choices=[MagicMock(
                 message=MagicMock(
                     content=MagicMock(
-                        strip=MagicMock(return_value='John Doe')
+                        strip=MagicMock(return_value='Kaido')
                     )
                 )
             )]
         )
-        name = self.ai_integration_service.extract_name_from_message("My name is John Doe.")
-        self.assertEqual(name, 'John Doe')
+        name = self.ai_integration_service.extract_name_from_message("Kaido")
+        self.assertEqual(name, 'Kaido')
         mock_create.assert_called_once()
-        self.assertEqual(mock_create.call_args.kwargs['messages'][1]['content'], "Extract the name from the following text: 'My name is John Doe.'")
+        self.assertEqual(mock_create.call_args.kwargs['messages'][1]['content'], "Extract the name from the following text: 'Kaido'")
         self.assertEqual(mock_create.call_args.kwargs['messages'][0]['content'], prompts.NAME_EXTRACTION_SYSTEM_PROMPT)
 
     @patch('openai.chat.completions.create')
-    def test_extract_name_from_complex_message(self, mock_create):
+    def test_extract_name_from_message_with_my_name_is_phrase(self, mock_create):
         mock_create.return_value = MagicMock(
             choices=[MagicMock(
                 message=MagicMock(
                     content=MagicMock(
-                        strip=MagicMock(return_value='Jane Smith')
+                        strip=MagicMock(return_value='Kaido')
                     )
                 )
             )]
         )
-        name = self.ai_integration_service.extract_name_from_message("Hello, I am Jane Smith, a law student.")
-        self.assertEqual(name, 'Jane Smith')
+        name = self.ai_integration_service.extract_name_from_message("My name is Kaido.")
+        self.assertEqual(name, 'Kaido')
         mock_create.assert_called_once()
-        self.assertEqual(mock_create.call_args.kwargs['messages'][1]['content'], "Extract the name from the following text: 'Hello, I am Jane Smith, a law student.'")
+        self.assertEqual(mock_create.call_args.kwargs['messages'][1]['content'], "Extract the name from the following text: 'My name is Kaido.'")
+        self.assertEqual(mock_create.call_args.kwargs['messages'][0]['content'], prompts.NAME_EXTRACTION_SYSTEM_PROMPT)
 
     @patch('openai.chat.completions.create')
-    def test_extract_name_no_name_found(self, mock_create):
+    def test_extract_name_from_message_with_i_am_phrase(self, mock_create):
         mock_create.return_value = MagicMock(
             choices=[MagicMock(
                 message=MagicMock(
                     content=MagicMock(
-                        strip=MagicMock(return_value='None')
+                        strip=MagicMock(return_value='Jane')
                     )
                 )
             )]
         )
-        name = self.ai_integration_service.extract_name_from_message("I am interested in legal writing.")
-        self.assertIsNone(name)
+        name = self.ai_integration_service.extract_name_from_message("Hello, I am Jane.")
+        self.assertEqual(name, 'Jane')
         mock_create.assert_called_once()
-        self.assertEqual(mock_create.call_args.kwargs['messages'][1]['content'], "Extract the name from the following text: 'I am interested in legal writing.'")
+        self.assertEqual(mock_create.call_args.kwargs['messages'][1]['content'], "Extract the name from the following text: 'Hello, I am Jane.'")
+        self.assertEqual(mock_create.call_args.kwargs['messages'][0]['content'], prompts.NAME_EXTRACTION_SYSTEM_PROMPT)
 
     @patch('openai.chat.completions.create')
-    def test_extract_name_empty_message(self, mock_create):
+    def test_extract_name_from_message_with_its_phrase(self, mock_create):
         mock_create.return_value = MagicMock(
             choices=[MagicMock(
                 message=MagicMock(
                     content=MagicMock(
-                        strip=MagicMock(return_value='None')
+                        strip=MagicMock(return_value='Bob')
+                    )
+                )
+            )]
+        )
+        name = self.ai_integration_service.extract_name_from_message("It's Bob, nice to meet you.")
+        self.assertEqual(name, 'Bob')
+        mock_create.assert_called_once()
+        self.assertEqual(mock_create.call_args.kwargs['messages'][1]['content'], "Extract the name from the following text: 'It's Bob, nice to meet you.'")
+        self.assertEqual(mock_create.call_args.kwargs['messages'][0]['content'], prompts.NAME_EXTRACTION_SYSTEM_PROMPT)
+
+    @patch('openai.chat.completions.create')
+    def test_extract_name_from_message_with_just_word(self, mock_create):
+        mock_create.return_value = MagicMock(
+            choices=[MagicMock(
+                message=MagicMock(
+                    content=MagicMock(
+                        strip=MagicMock(return_value='Sarah')
+                    )
+                )
+            )]
+        )
+        name = self.ai_integration_service.extract_name_from_message("Just Sarah.")
+        self.assertEqual(name, 'Sarah')
+        mock_create.assert_called_once()
+        self.assertEqual(mock_create.call_args.kwargs['messages'][1]['content'], "Extract the name from the following text: 'Just Sarah.'")
+        self.assertEqual(mock_create.call_args.kwargs['messages'][0]['content'], prompts.NAME_EXTRACTION_SYSTEM_PROMPT)
+
+    @patch('openai.chat.completions.create')
+    def test_extract_name_with_punctuation(self, mock_create):
+        mock_create.return_value = MagicMock(
+            choices=[MagicMock(
+                message=MagicMock(
+                    content=MagicMock(
+                        strip=MagicMock(return_value='Kaido')
+                    )
+                )
+            )]
+        )
+        name = self.ai_integration_service.extract_name_from_message("Kaido!")
+        self.assertEqual(name, 'Kaido')
+        mock_create.assert_called_once()
+        self.assertEqual(mock_create.call_args.kwargs['messages'][1]['content'], "Extract the name from the following text: 'Kaido!'")
+        self.assertEqual(mock_create.call_args.kwargs['messages'][0]['content'], prompts.NAME_EXTRACTION_SYSTEM_PROMPT)
+
+    @patch('openai.chat.completions.create')
+    def test_extract_name_no_name_found_returns_none(self, mock_create):
+        mock_create.return_value = MagicMock(
+            choices=[MagicMock(
+                message=MagicMock(
+                    content=MagicMock(
+                        strip=MagicMock(return_value='[NO_NAME]')
+                    )
+                )
+            )]
+        )
+        name = self.ai_integration_service.extract_name_from_message("Hello there, how are you?")
+        self.assertEqual(name, 'User')
+        mock_create.assert_called_once()
+        self.assertEqual(mock_create.call_args.kwargs['messages'][1]['content'], "Extract the name from the following text: 'Hello there, how are you?'")
+        self.assertEqual(mock_create.call_args.kwargs['messages'][0]['content'], prompts.NAME_EXTRACTION_SYSTEM_PROMPT)
+
+    @patch('openai.chat.completions.create')
+    def test_extract_name_what_is_your_name_query_returns_none(self, mock_create):
+        mock_create.return_value = MagicMock(
+            choices=[MagicMock(
+                message=MagicMock(
+                    content=MagicMock(
+                        strip=MagicMock(return_value='[NO_NAME]')
+                    )
+                )
+            )]
+        )
+        name = self.ai_integration_service.extract_name_from_message("What is your name?")
+        self.assertEqual(name, 'User')
+        mock_create.assert_called_once()
+        self.assertEqual(mock_create.call_args.kwargs['messages'][1]['content'], "Extract the name from the following text: 'What is your name?'")
+        self.assertEqual(mock_create.call_args.kwargs['messages'][0]['content'], prompts.NAME_EXTRACTION_SYSTEM_PROMPT)
+
+    @patch('openai.chat.completions.create')
+    def test_extract_name_empty_message_returns_none(self, mock_create):
+        mock_create.return_value = MagicMock(
+            choices=[MagicMock(
+                message=MagicMock(
+                    content=MagicMock(
+                        strip=MagicMock(return_value='[NO_NAME]')
                     )
                 )
             )]
         )
         name = self.ai_integration_service.extract_name_from_message("")
-        self.assertIsNone(name)
+        self.assertEqual(name, 'User')
         mock_create.assert_called_once()
         self.assertEqual(mock_create.call_args.kwargs['messages'][1]['content'], "Extract the name from the following text: ''")
+        self.assertEqual(mock_create.call_args.kwargs['messages'][0]['content'], prompts.NAME_EXTRACTION_SYSTEM_PROMPT)
 
     @patch('openai.chat.completions.create', side_effect=openai.OpenAIError('API Error'))
     def test_extract_name_openai_error_returns_none(self, mock_create):
         name = self.ai_integration_service.extract_name_from_message("My name is Test User.")
-        self.assertIsNone(name)
+        self.assertEqual(name, 'User')
         mock_create.assert_called_once()
     
 

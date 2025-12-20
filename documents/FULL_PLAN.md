@@ -118,20 +118,6 @@ If inactive for any of these specific intervals, one of these (randomized) messa
 
 5. Technical Implementation Steps (Summary)
     1.  **AI Integration Module:** Design and implement shared functions for connecting to various AI models (e.g., for quick replies, summarization, exam grading, content generation). This module will abstract away model specifics, allowing for easy interchangeability and providing distinct functions for different model types or purposes, leveraging `OPEN_AI_TOKEN` from the `.env` file for authentication.
-*   **Parameter Naming for Response Length:** Be aware that some advanced or newer AI models (e.g., `gpt-5.2`) may require `max_completion_tokens` instead of `max_tokens` to specify the maximum length of the generated response. Always consult the specific model's documentation to ensure correct parameter usage to avoid `invalid_request_error` issues.
-
-    2.  Setup Webhook: Connect to Facebook Messenger API. Subscribe to messages, messaging_postbacks, and message_echoes.
-    3.  Database Init: Created the necessary database tables and imported initial question data. (See `documents/DATABASE.md` for schema details).
-    
-    5.  Exam Logic: Build the function to fetch random questions and the Prompt Engineering for the "5-Point Feedback."
-    6.  Context Logic: Implement the "Sliding Window" algorithm with the refined summarization rules (triggering at >20 messages, summarizing oldest 14, merging with existing summary, and ensuring the new summary is <1,000 characters).
-    7.  Queuing System: Set up a task queuing system (e.g., Celery) for asynchronous message processing and handling the detailed message flow.
-    8.  Quick Reply Implementation: Develop the nano-model quick reply mechanism, ensuring it respects the exam stage exclusion.
-    9.  Testing: Specifically test that the AI continues to function correctly even when an admin is active, ensuring seamless interaction regardless of human intervention.
-    10. **Cron Entry Point:** Implement a single URL endpoint (`/chat/cron/dispatch/`) that will serve as the hourly trigger for all scheduled cron tasks, including re-engagement messages and data collection. This endpoint will internally dispatch specific tasks to the queuing system.
-    11. Modular Design: Implement each conversational stage (Onboarding, Marketing, Mock Exam, General Bot) as separate functions, ideally in their own files, to promote cleaner code, improve maintainability, and facilitate isolated unit testing.
-
-### AI Models Used
--   **General AI Tasks (Quick Replies, Summarization):** `gpt-5-mini`
--   **Exam Grading:** `gpt-5.2`
--   **Note on AI Model Parameters:** Both `temperature` and parameter naming for response length (e.g., `max_tokens` vs. `max_completion_tokens`) require careful attention. Some models might not support `temperature` or may have specific naming conventions for output length parameters. Always verify parameter compatibility with the specific AI model's documentation to prevent `invalid_request_error` issues.
+*   **Parameter Naming for Response Length (Standardization):** It is a project standard to use `max_completion_tokens` when specifying the maximum length of generated responses from AI models (e.g., `gpt-5.2`, `gpt-5-mini`). The parameter `max_tokens` should be avoided as it is not consistently supported across all models and can lead to `invalid_request_error` issues. Always consult the specific model's documentation for any exceptions, but `max_completion_tokens` is the preferred and default parameter for this project.
+...
+-   **Note on AI Model Parameters:** The project standard is to use `max_completion_tokens` for controlling the output length of AI model responses. The `temperature` parameter has been removed from all AI model configurations (e.g., in `chat/ai_integration.py`). This is because not all models consistently support the `temperature` parameter, and some may only allow a default value of 1. Removing it ensures broader compatibility and prevents `invalid_request_error` issues. Always verify parameter compatibility with the specific AI model's documentation.

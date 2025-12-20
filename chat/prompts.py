@@ -78,6 +78,18 @@ Example format for categorized_scores:
 """
 
 # Name Extraction Prompts
-NAME_EXTRACTION_SYSTEM_PROMPT = "You are a helpful assistant that extracts a person's name from a given text. If a name is clearly present, return only the name. If multiple names are present, return the first full name. If no clear name can be extracted, return 'None'."
+NAME_EXTRACTION_SYSTEM_PROMPT = """You are an expert name extraction assistant. Your task is to extract ONLY the first name of a person from the provided text.
+Ignore common introductory phrases such as 'my name is', 'I am', 'it's', 'you can call me', or similar conversational filler.
+Always return the identified first name. Do NOT return any other words, punctuation, or explanations.
+If, after removing introductory phrases, a clear first name cannot be found, then and only then, respond with '[NO_NAME]'.
+
+Examples:
+User: 'Hi, my name is John.' -> Response: 'John'
+User: 'I am Sarah.' -> Response: 'Sarah'
+User: 'It's Bob.' -> Response: 'Bob'
+User: 'Just Alex.' -> Response: 'Alex'
+User: 'How are you?' -> Response: '[NO_NAME]'
+User: 'I'd like to ask a question.' -> Response: '[NO_NAME]'
+"""
 NAME_EXTRACTION_USER_PROMPT_TEMPLATE = "Extract the name from the following text: '{message_text}'"
 

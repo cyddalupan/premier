@@ -60,6 +60,7 @@ This project is a Django application (`premier`) serving as a backend for a "Law
         ```bash
         sudo systemctl restart apache2
         ```
+    *   **Debugging Visibility (Development):** For quick visibility of values during development and testing, especially when standard logging configuration is complex, `print()` statements can be temporarily used. Remember to remove them before committing production code.
 
 ### Django Admin Integration:
 *   When creating or updating Django models (database tables), always ensure that the new or modified columns are properly configured to be viewable and editable within the Django administration interface. This typically involves registering the model in `admin.py` and configuring `list_display`, `list_editable`, `fieldsets`, etc.
