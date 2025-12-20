@@ -1,4 +1,5 @@
 from django.db import models
+from legal.models import Course # Import the Course model
 
 class User(models.Model):
     # Enum for current_stage
@@ -55,6 +56,7 @@ class Question(models.Model):
     ]
 
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
+    course = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True, blank=True, help_text="The course this question belongs to")
     question_text = models.TextField()
     expected_answer = models.TextField()
 

@@ -4,6 +4,7 @@ import unittest.mock as mock
 from datetime import datetime, timedelta
 from freezegun import freeze_time
 from chat.models import User, ChatLog, Question
+from legal.models import Course # Import Course model for testing
 from chat.tasks import process_messenger_message, check_inactive_users, RE_ENGAGEMENT_MESSAGE_TYPES # Import check_inactive_users
 from chat.utils import ai_integration_service # Import ai_integration_service
 from django.conf import settings
@@ -1315,3 +1316,81 @@ class GeneralBotStageTest(TestCase):
         
         self.user_unregistered.refresh_from_db()
         self.assertEqual(self.user_unregistered.current_stage, 'GENERAL_BOT')
+
+
+class QuestionModelCourseIntegrationTest(TestCase):
+    def setUp(self):
+        from legal.models import Course # Import Course model for testing
+        self.course1 = Course.objects.create(name="Criminal Law", description="Course on Criminal Law")
+        self.course2 = Course.objects.create(name="Civil Law", description="Course on Civil Law")
+
+        self.question_no_course = Question.objects.create(
+            category='ETHICS',
+            question_text='A question without a specific course?',
+            expected_answer='Answer for no course'
+        )
+        self.question_crim_1 = Question.objects.create(
+            category='CRIMINAL_LAW',
+            question_text='Criminal Law Question 1?',
+            expected_answer='Answer for Crim 1',
+            course=self.course1
+        )
+        self.question_crim_2 = Question.objects.create(
+            category='CRIMINAL_LAW',
+            question_text='Criminal Law Question 2?',
+            expected_answer='Answer for Crim 2',
+            course=self.course1
+        )
+        self.question_civil_1 = Question.objects.create(
+            category='CIVIL_LAW',
+            question_text='Civil Law Question 1?',
+            expected_answer='Answer for Civil 1',
+            course=self.course2
+        )
+
+    def test_question_can_be_assigned_to_course(self):
+        self.assertEqual(self.question_crim_1.course, self.course1)
+        self.assertEqual(self.question_civil_1.course, self.course2)
+
+    def test_question_without_course_is_null(self):
+        self.assertIsNone(self.question_no_course.course)
+
+    def test_filter_questions_by_course(self):
+        criminal_questions = Question.objects.filter(course=self.course1)
+        self.assertEqual(criminal_questions.count(), 2)
+        self.assertIn(self.question_crim_1, criminal_questions)
+        self.assertIn(self.question_crim_2, criminal_questions)
+        self.assertNotIn(self.question_civil_1, criminal_questions)
+
+        civil_questions = Question.objects.filter(course=self.course2)
+        self.assertEqual(civil_questions.count(), 1)
+        self.assertIn(self.question_civil_1, civil_questions)
+        self.assertNotIn(self.question_crim_1, civil_questions)
+
+        no_course_questions = Question.objects.filter(course__isnull=True)
+        self.assertEqual(no_course_questions.count(), 1)
+        self.assertIn(self.question_no_course, no_course_questions)
+
+    def test_on_delete_set_null_behavior(self):
+        # Create a new course and question for this specific test
+        course_to_delete = Course.objects.create(name="Course to Delete")
+        question_to_check = Question.objects.create(
+            category='ETHICS',
+            question_text='Question for deleted course?',
+            expected_answer='Answer',
+            course=course_to_delete
+        )
+
+        self.assertEqual(question_to_check.course, course_to_delete)
+
+        # Delete the course
+        course_to_delete.delete()
+
+        # Refresh the question from the database
+        question_to_check.refresh_from_db()
+
+        # Assert that the course field is now None
+        self.assertIsNone(question_to_check.course)
+        # Assert that the question itself was not deleted
+        self.assertIsNotNone(question_to_check.id)
+

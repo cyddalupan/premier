@@ -39,14 +39,24 @@ Stores state and memory.
     •   summary: (Text) The AI-generated summary of the user's persona and history.
 
     •   last_interaction_timestamp: (DateTime) To trigger follow-up messages.
-B. Question Bank (exam_questions)
+
+B. Course Catalog (courses)
+New table to categorize exam questions.
+    •   id (PK)
+    •   name: (String) Unique name of the course (e.g., "Criminal Law", "Civil Law").
+    •   description: (Text) Optional detailed description of the course.
+    •   created_at: (DateTime) Timestamp when the course was created.
+    •   updated_at: (DateTime) Timestamp when the course was last updated.
+
+C. Question Bank (exam_questions)
 Pool for the Mock Exam.
     •   id (PK)
-    •   category: (e.g., Criminal Law, Civil Law).
+    •   course: (FK to courses) The course this question belongs to. (Nullable)
+    •   category: (e.g., Criminal Law, Civil Law) - *Note: This can now be refined or become a sub-category under 'course'*.
     •   question_text: The actual scenario.
     •   expected_answer: The lawyer's answer/key points.
         *   **Scoring Note:** The closer the user's answer is to this `expected_answer`, the higher the score.
-C. Chat Logs (chat_history)
+D. Chat Logs (chat_history)
 Permanent record of all messages.
     •   id (PK)
     •   user_id: FK to Users.
@@ -54,7 +64,7 @@ Permanent record of all messages.
     •   message_content: Text body.
     •   timestamp: Time sent.
 
-D. Exam Results Table (exam_results)
+E. Exam Results Table (exam_results)
 Stores the results of each mock exam question.
     •   id (PK)
     •   user_id: FK to Users.
