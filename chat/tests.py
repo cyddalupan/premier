@@ -732,22 +732,25 @@ class OnboardingStageTest(TestCase):
         self.assertEqual(self.user.current_stage, 'ONBOARDING')
         self.assertEqual(self.user.onboarding_sub_stage, 'ASK_NAME')
 
-        mock_send_messenger_message.assert_called_once_with(
-            self.user.user_id,
-            'Hello! I\'m the Law Review Center AI Chatbot, your personal study assistant. What should I call you?'
-        )
+        expected_message_part = "Ready to test your legal skills—for FREE? ⚖️"
+        mock_send_messenger_message.assert_called_once()
+        self.assertIn(expected_message_part, mock_send_messenger_message.call_args[0][1])
+        self.assertIn("First, what's your name?", mock_send_messenger_message.call_args[0][1])
     
+    @patch('chat.stages.onboarding.AIIntegration.extract_name_from_message') # Corrected patch target
     @patch('chat.tasks.send_messenger_message')
-    def test_onboarding_captures_name_and_asks_academic_status(self, mock_send_messenger_message):
+    def test_onboarding_captures_name_and_asks_academic_status(self, mock_send_messenger_message, mock_extract_name):
         # First, simulate the bot asking for the name
         self.user.onboarding_sub_stage = 'ASK_NAME'
         self.user.save()
+
+        mock_extract_name.return_value = 'John Doe' # AI successfully extracts name
 
         # Simulate user providing their name
         user_message_event = {
             'sender': {'id': self.user.user_id},
             'recipient': {'id': 'PAGE_ID'},
-            'message': {'mid': 'm_name_provided', 'text': 'John Doe'},
+            'message': {'mid': 'm_name_provided', 'text': 'My name is John Doe, nice to meet you!'},
             'timestamp': int(timezone.now().timestamp() * 1000)
         }
 
@@ -759,16 +762,50 @@ class OnboardingStageTest(TestCase):
         self.assertEqual(self.user.onboarding_sub_stage, 'ASK_ACADEMIC_STATUS')
         self.assertIsNone(self.user.academic_status)
 
+        mock_extract_name.assert_called_once_with('My name is John Doe, nice to meet you!')
         mock_send_messenger_message.assert_called_once_with(
             self.user.user_id,
             'Nice to meet you, John Doe! What is your current academic status or focus area in law (e.g., 1st year, Bar examinee, aspiring lawyer)?'
         )
 
+    @patch('chat.stages.onboarding.AIIntegration.extract_name_from_message') # Corrected patch target
     @patch('chat.tasks.send_messenger_message')
-    def test_onboarding_re_asks_name_if_empty_message(self, mock_send_messenger_message):
+    def test_onboarding_re_asks_name_if_ai_fails_extraction(self, mock_send_messenger_message, mock_extract_name):
+        # First, simulate the bot asking for the name
+        self.user.onboarding_sub_stage = 'ASK_NAME'
+        self.user.save()
+
+        mock_extract_name.return_value = None # AI fails to extract a name
+
+        # Simulate user sending a message that AI cannot parse as a name
+        user_message_event = {
+            'sender': {'id': self.user.user_id},
+            'recipient': {'id': 'PAGE_ID'},
+            'message': {'mid': 'm_no_name_found', 'text': 'I just want to start the exam.'},
+            'timestamp': int(timezone.now().timestamp() * 1000)
+        }
+
+        process_messenger_message(user_message_event)
+
+        self.user.refresh_from_db()
+        self.assertIsNone(self.user.first_name)
+        self.assertEqual(self.user.current_stage, 'ONBOARDING')
+        self.assertEqual(self.user.onboarding_sub_stage, 'ASK_NAME') # Should remain ASK_NAME
+
+        mock_extract_name.assert_called_once_with('I just want to start the exam.')
+        mock_send_messenger_message.assert_called_once_with(
+            self.user.user_id,
+            "I couldn't quite catch your name. Could you please tell me your first name?"
+        )
+
+    @patch('chat.stages.onboarding.AIIntegration.extract_name_from_message') # Corrected patch target
+    @patch('chat.tasks.send_messenger_message')
+    def test_onboarding_re_asks_name_if_empty_message(self, mock_send_messenger_message, mock_extract_name):
         # Simulate the bot asking for the name
         self.user.onboarding_sub_stage = 'ASK_NAME'
         self.user.save()
+
+        mock_extract_name.return_value = None # AI will return None for empty string
 
         # Simulate user sending an empty message
         user_message_event = {
@@ -785,9 +822,10 @@ class OnboardingStageTest(TestCase):
         self.assertEqual(self.user.current_stage, 'ONBOARDING')
         self.assertEqual(self.user.onboarding_sub_stage, 'ASK_NAME') # Should remain ASK_NAME
 
+        mock_extract_name.assert_called_once_with('')
         mock_send_messenger_message.assert_called_once_with(
             self.user.user_id,
-            'Hello! I\'m the Law Review Center AI Chatbot, your personal study assistant. What should I call you?'
+            "I couldn't quite catch your name. Could you please tell me your first name?"
         )
 
     @patch('chat.tasks.send_messenger_message')
@@ -965,6 +1003,82 @@ class TestUserStrengthAssessment(TestCase):
             self.assertTrue(error_log_found, "Expected OpenAI error log not found.")
 
 
+
+class AIIntegrationNameExtractionTest(TestCase):
+    def setUp(self):
+        self.ai_integration_service = ai_integration_service
+
+    @patch('openai.chat.completions.create')
+    def test_extract_name_from_simple_message(self, mock_create):
+        mock_create.return_value = MagicMock(
+            choices=[MagicMock(
+                message=MagicMock(
+                    content=MagicMock(
+                        strip=MagicMock(return_value='John Doe')
+                    )
+                )
+            )]
+        )
+        name = self.ai_integration_service.extract_name_from_message("My name is John Doe.")
+        self.assertEqual(name, 'John Doe')
+        mock_create.assert_called_once()
+        self.assertEqual(mock_create.call_args.kwargs['messages'][1]['content'], "Extract the name from the following text: 'My name is John Doe.'")
+        self.assertEqual(mock_create.call_args.kwargs['messages'][0]['content'], prompts.NAME_EXTRACTION_SYSTEM_PROMPT)
+
+    @patch('openai.chat.completions.create')
+    def test_extract_name_from_complex_message(self, mock_create):
+        mock_create.return_value = MagicMock(
+            choices=[MagicMock(
+                message=MagicMock(
+                    content=MagicMock(
+                        strip=MagicMock(return_value='Jane Smith')
+                    )
+                )
+            )]
+        )
+        name = self.ai_integration_service.extract_name_from_message("Hello, I am Jane Smith, a law student.")
+        self.assertEqual(name, 'Jane Smith')
+        mock_create.assert_called_once()
+        self.assertEqual(mock_create.call_args.kwargs['messages'][1]['content'], "Extract the name from the following text: 'Hello, I am Jane Smith, a law student.'")
+
+    @patch('openai.chat.completions.create')
+    def test_extract_name_no_name_found(self, mock_create):
+        mock_create.return_value = MagicMock(
+            choices=[MagicMock(
+                message=MagicMock(
+                    content=MagicMock(
+                        strip=MagicMock(return_value='None')
+                    )
+                )
+            )]
+        )
+        name = self.ai_integration_service.extract_name_from_message("I am interested in legal writing.")
+        self.assertIsNone(name)
+        mock_create.assert_called_once()
+        self.assertEqual(mock_create.call_args.kwargs['messages'][1]['content'], "Extract the name from the following text: 'I am interested in legal writing.'")
+
+    @patch('openai.chat.completions.create')
+    def test_extract_name_empty_message(self, mock_create):
+        mock_create.return_value = MagicMock(
+            choices=[MagicMock(
+                message=MagicMock(
+                    content=MagicMock(
+                        strip=MagicMock(return_value='None')
+                    )
+                )
+            )]
+        )
+        name = self.ai_integration_service.extract_name_from_message("")
+        self.assertIsNone(name)
+        mock_create.assert_called_once()
+        self.assertEqual(mock_create.call_args.kwargs['messages'][1]['content'], "Extract the name from the following text: ''")
+
+    @patch('openai.chat.completions.create', side_effect=openai.OpenAIError('API Error'))
+    def test_extract_name_openai_error_returns_none(self, mock_create):
+        name = self.ai_integration_service.extract_name_from_message("My name is Test User.")
+        self.assertIsNone(name)
+        mock_create.assert_called_once()
+    
 
 class GeneralBotStageTest(TestCase):
     def setUp(self):

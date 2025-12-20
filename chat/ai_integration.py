@@ -202,3 +202,34 @@ class AIIntegration:
             logger.error(f"Unexpected error during strength assessment generation: {e}")
             return "An unexpected error occurred while trying to assess your strengths."
 
+    def extract_name_from_message(self, message_text):
+        """
+        Extracts a person's name from the given message text using an AI model.
+        :param message_text: The full text from which to extract the name.
+        :return: The extracted name as a string, or None if no name is found.
+        """
+        logger.info(f"Attempting to extract name from message: {message_text}")
+        try:
+            response = openai.chat.completions.create(
+                model="gpt-5-mini", # Use a smaller model for this task
+                messages=[
+                    {"role": "system", "content": prompts.NAME_EXTRACTION_SYSTEM_PROMPT},
+                    {"role": "user", "content": prompts.NAME_EXTRACTION_USER_PROMPT_TEMPLATE.format(message_text=message_text)}
+                ],
+                max_tokens=20 # A name should not be very long
+            )
+            extracted_name = response.choices[0].message.content.strip()
+            if extracted_name and extracted_name.lower() != 'none':
+                logger.info(f"Extracted name: {extracted_name}")
+                return extracted_name
+            else:
+                logger.info("No name extracted by AI or AI returned 'None'.")
+                return None
+        except openai.OpenAIError as e:
+            logger.error(f"OpenAI API error during name extraction: {e}")
+            return None
+        except Exception as e:
+            logger.error(f"Unexpected error during name extraction: {e}")
+            return None
+
+

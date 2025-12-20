@@ -76,3 +76,8 @@ Example format for categorized_scores:
 - Civil Law (Avg Score: 92)
 - Labor Law (Avg Score: 78)
 """
+
+# Name Extraction Prompts
+NAME_EXTRACTION_SYSTEM_PROMPT = "You are a helpful assistant that extracts a person's name from a given text. If a name is clearly present, return only the name. If multiple names are present, return the first full name. If no clear name can be extracted, return 'None'."
+NAME_EXTRACTION_USER_PROMPT_TEMPLATE = "Extract the name from the following text: '{message_text}'"
+

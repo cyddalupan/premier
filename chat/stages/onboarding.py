@@ -1,5 +1,6 @@
 import logging
 from ..models import User, ChatLog # Import User model to interact with it
+from ..ai_integration import AIIntegration # Import AIIntegration
 
 logger = logging.getLogger(__name__)
 
@@ -12,23 +13,31 @@ def handle_onboarding_stage(user, messaging_event):
     :param user: The User object.
     :param messaging_event: The raw messaging event from Facebook.
     """
+    ai_integration = AIIntegration() # Instantiate AIIntegration
     logger.info(f"Handling ONBOARDING stage for user {user.user_id}, sub_stage: {user.onboarding_sub_stage}")
     message_text = messaging_event.get('message', {}).get('text')
     response_messages = []
 
     # If first_name is not set, we need to ask for it.
     if not user.first_name:
-        if user.onboarding_sub_stage == 'ASK_NAME' and message_text and message_text.strip():
-            user.first_name = message_text.strip()
-            user.onboarding_sub_stage = 'ASK_ACADEMIC_STATUS' # Move to next sub-stage
-            user.save()
-            logger.info(f"User {user.user_id} name set to: {user.first_name}.")
-            response_messages.append(f"Nice to meet you, {user.first_name}! What is your current academic status or focus area in law (e.g., 1st year, Bar examinee, aspiring lawyer)?")
+        if user.onboarding_sub_stage == 'ASK_NAME' and message_text is not None:
+            extracted_name = ai_integration.extract_name_from_message(message_text)
+            if extracted_name:
+                user.first_name = extracted_name
+                user.onboarding_sub_stage = 'ASK_ACADEMIC_STATUS' # Move to next sub-stage
+                user.save()
+                logger.info(f"User {user.user_id} name set to: {user.first_name}.")
+                response_messages.append(f"Nice to meet you, {user.first_name}! What is your current academic status or focus area in law (e.g., 1st year, Bar examinee, aspiring lawyer)?")
+            else:
+                # If AI couldn't extract a name, re-ask.
+                user.onboarding_sub_stage = 'ASK_NAME' # Keep in the same sub-stage
+                user.save()
+                response_messages.append("I couldn't quite catch your name. Could you please tell me your first name?")
         else:
             # If sub_stage is not ASK_NAME, or message_text is empty, ask for the name
             user.onboarding_sub_stage = 'ASK_NAME'
             user.save()
-            response_messages.append("Hello! I'm the Law Review Center AI Chatbot, your personal study assistant. What should I call you?")
+            response_messages.append("Ready to test your legal skills—for FREE? ⚖️\nTry our AI-powered assessment exam and get real-time results in Legal Basis, Legal Writing, and Legal Reasoning.\n📊 Instant feedback\n🤖 Smart AI evaluation\n⏱️ Takes only a few minutes\n\nStart your free assessment now!\n\nFirst, what's your name?")
 
     # If first_name is set, but academic_status is not, we need to ask for academic status.
     elif not user.academic_status:
