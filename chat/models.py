@@ -33,7 +33,7 @@ class User(models.Model):
     last_question_id_asked = models.ForeignKey('Question', on_delete=models.SET_NULL, null=True, blank=True)
     academic_status = models.CharField(max_length=255, blank=True, null=True)
     summary = models.TextField(blank=True, null=True)  # AI-generated summary
-    last_admin_reply_timestamp = models.DateTimeField(blank=True, null=True)  # For 10-minute pause logic
+
     last_interaction_timestamp = models.DateTimeField(blank=True, null=True)  # To trigger follow-up messages
     re_engagement_stage_index = models.IntegerField(default=0, blank=True, null=True) # Tracks the current re-engagement stage (0 for none, 1 for stage 1, etc.)
     last_re_engagement_message_sent_at = models.DateTimeField(blank=True, null=True) # Timestamp of when the last re-engagement message was sent
@@ -82,7 +82,7 @@ class ExamResult(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     score = models.IntegerField()  # Numerical score (e.g., 1-100)
-    grammar_feedback = models.TextField(blank=True, null=True)
+    legal_writing_feedback = models.TextField(blank=True, null=True)
     legal_basis_feedback = models.TextField(blank=True, null=True)
     application_feedback = models.TextField(blank=True, null=True)
     conclusion_feedback = models.TextField(blank=True, null=True)

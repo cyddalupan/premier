@@ -62,15 +62,15 @@ def handle_mock_exam_stage(user, messaging_event):
 
         feedback_message = "Here's the feedback on your answer:\n"
         exam_score = None
-        grammar_feedback = None
+        legal_writing_feedback = None
         legal_basis_feedback = None
         application_feedback = None
         conclusion_feedback = None
 
         if feedback and isinstance(feedback, dict):
-            if 'grammar_feedback' in feedback:
-                grammar_feedback = feedback['grammar_feedback']
-                feedback_message += f"- Grammar/Syntax: {grammar_feedback}\n"
+            if 'legal_writing_feedback' in feedback:
+                legal_writing_feedback = feedback['legal_writing_feedback']
+                feedback_message += f"- Legal Writing: {legal_writing_feedback}\n"
             if 'legal_basis_feedback' in feedback:
                 legal_basis_feedback = feedback['legal_basis_feedback']
                 feedback_message += f"- Legal Basis: {legal_basis_feedback}\n"
@@ -95,7 +95,7 @@ def handle_mock_exam_stage(user, messaging_event):
                 user=user,
                 question=current_question,
                 score=exam_score,
-                grammar_feedback=grammar_feedback,
+                legal_writing_feedback=legal_writing_feedback,
                 legal_basis_feedback=legal_basis_feedback,
                 application_feedback=application_feedback,
                 conclusion_feedback=conclusion_feedback,

@@ -8,17 +8,10 @@ D. Message Processing Flow (Detailed Steps)
 The following steps outline the sequential processing of incoming messages, orchestrated by a queuing system:
     1.  **Queue Entry:** An incoming message is first placed into a processing queue.
     2.  **Retrieve User FB ID:** Extract the Facebook PSID (user_id) from the message.
-    3.  **Echo Check:** Determine if the message is an echo from Messenger (indicating an admin's reply).
-        *   **If Yes (Admin Echo):**
-            *   Save the admin's message to the Chat Logs (with sender_type: ADMIN_MANUAL).
-            *   Update the user's data, noting that the admin has replied.
-            *   Update the user's `last_admin_reply_timestamp`.
-            *   **STOP Processing** for this message.
+    3.  **Echo Check:** Determine if the message is an echo from Messenger. Echoes sent by the bot itself are ignored. Echoes originating from a human admin are logged (with sender_type: ADMIN_MANUAL), and the user's `last_admin_reply_timestamp` is updated, but AI processing continues without interruption.
     5.  **Get User Data:** Retrieve comprehensive user data based on the `fb_id`.
     6.  **Capture User Name (if new user):** If the user's `first_name` is not already set, capture it from the incoming message content.
     7.  **Save User Message:** Save the incoming user's message to the Chat Logs (with sender_type: USER).
-    8.  **Admin Active Check:** Check if an admin has replied to this user within the last 10 minutes (using `last_admin_reply_timestamp`).
-        *   **If Yes:** **STOP Processing** for this message.
     9.  **Determine User Stage:** Based on user data, identify the `current_stage` (e.g., ONBOARDING, MARKETING, MOCK_EXAM, GENERAL_BOT).
     10. **Quick Reply Logic:**
         *   **If the user is NOT in the Mock Exam stage:**
@@ -28,8 +21,7 @@ The following steps outline the sequential processing of incoming messages, orch
     13. **Context Summarization Check:** After all replies are generated and saved, check if the total number of uns summarized chat messages (USER, SYSTEM_AI, ADMIN_MANUAL) for this user exceeds 20.
         *   **If Yes:** Summarize the oldest 14 uns summarized messages, merge with the existing user summary, and update the user's summary field (ensuring it is less than 1,000 characters).
 
-A. The "Manual Override" (Admin Pause)
-This mechanism prevents the AI from interrupting a human admin during a live chat. Its detailed operation, including the handling of admin echoes and the 10-minute pause logic, is described in the "Message Processing Flow" (Steps 3 & 8).
+
 B. Context Management (Memory Optimization)
 This mechanism handles token limits and maintains conversation continuity by dynamically summarizing chat history. The detailed "Sliding Window" algorithm, including its trigger conditions and summarization process, is described in the "Message Processing Flow" (Step 13).
 
@@ -45,7 +37,7 @@ Stores state and memory.
     •   exam_question_counter: (Int: 0-8) To track progress during the exam.
     •   last_question_id_asked: (FK to exam_questions) Stores the ID of the last question presented to the user during the mock exam.
     •   summary: (Text) The AI-generated summary of the user's persona and history.
-    •   last_admin_reply_timestamp: (DateTime) For the 10-minute pause logic.
+
     •   last_interaction_timestamp: (DateTime) To trigger follow-up messages.
 B. Question Bank (exam_questions)
 Pool for the Mock Exam.
@@ -68,7 +60,7 @@ Stores the results of each mock exam question.
     •   user_id: FK to Users.
     •   question_id: FK to Question Bank (exam_questions).
     •   score: (Int) Numerical score for the answer (e.g., 1-100).
-    •   grammar_feedback: (Text) Feedback on grammar/syntax.
+    •   legal_writing_feedback: (Text) Feedback on legal writing/syntax.
     •   legal_basis_feedback: (Text) Feedback on legal basis.
     •   application_feedback: (Text) Feedback on application of law.
     •   conclusion_feedback: (Text) Feedback on correctness of conclusion.
@@ -89,7 +81,7 @@ Stage 3: The Mock Exam (The Core Feature)
     1   AI selects a random question from exam_questions and stores its ID in the user's `last_question_id_asked` field.
     2   User answers.
     3   AI Analysis (The 5-Point Feedback System):
-    ▪   Grammar/Syntax: Checks for professional legal tone.
+    ▪   Legal Writing: Checks for professional legal tone.
     ▪   Legal Basis: Cites relevant laws/jurisprudence.
     ▪   Application: How the law was applied to facts.
     ▪   Conclusion: Whether the final answer is correct.
@@ -126,14 +118,20 @@ If inactive for any of these specific intervals, one of these (randomized) messa
 
 5. Technical Implementation Steps (Summary)
     1.  **AI Integration Module:** Design and implement shared functions for connecting to various AI models (e.g., for quick replies, summarization, exam grading, content generation). This module will abstract away model specifics, allowing for easy interchangeability and providing distinct functions for different model types or purposes, leveraging `OPEN_AI_TOKEN` from the `.env` file for authentication.
+*   **Parameter Naming for Response Length:** Be aware that some advanced or newer AI models (e.g., `gpt-5.2`) may require `max_completion_tokens` instead of `max_tokens` to specify the maximum length of the generated response. Always consult the specific model's documentation to ensure correct parameter usage to avoid `invalid_request_error` issues.
+
     2.  Setup Webhook: Connect to Facebook Messenger API. Subscribe to messages, messaging_postbacks, and message_echoes.
     3.  Database Init: Created the necessary database tables and imported initial question data. (See `documents/DATABASE.md` for schema details).
-    4.  Admin Logic: Implement the middleware to check the 10-minute timer.
+    
     5.  Exam Logic: Build the function to fetch random questions and the Prompt Engineering for the "5-Point Feedback."
     6.  Context Logic: Implement the "Sliding Window" algorithm with the refined summarization rules (triggering at >20 messages, summarizing oldest 14, merging with existing summary, and ensuring the new summary is <1,000 characters).
     7.  Queuing System: Set up a task queuing system (e.g., Celery) for asynchronous message processing and handling the detailed message flow.
     8.  Quick Reply Implementation: Develop the nano-model quick reply mechanism, ensuring it respects the exam stage exclusion.
-    9.  Testing: Specifically test the Admin interruption to ensure the AI stays silent.
+    9.  Testing: Specifically test that the AI continues to function correctly even when an admin is active, ensuring seamless interaction regardless of human intervention.
     10. **Cron Entry Point:** Implement a single URL endpoint (`/chat/cron/dispatch/`) that will serve as the hourly trigger for all scheduled cron tasks, including re-engagement messages and data collection. This endpoint will internally dispatch specific tasks to the queuing system.
     11. Modular Design: Implement each conversational stage (Onboarding, Marketing, Mock Exam, General Bot) as separate functions, ideally in their own files, to promote cleaner code, improve maintainability, and facilitate isolated unit testing.
 
+### AI Models Used
+-   **General AI Tasks (Quick Replies, Summarization):** `gpt-5-mini`
+-   **Exam Grading:** `gpt-5.2`
+-   **Note on AI Model Parameters:** Both `temperature` and parameter naming for response length (e.g., `max_tokens` vs. `max_completion_tokens`) require careful attention. Some models might not support `temperature` or may have specific naming conventions for output length parameters. Always verify parameter compatibility with the specific AI model's documentation to prevent `invalid_request_error` issues.

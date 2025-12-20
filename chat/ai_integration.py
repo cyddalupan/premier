@@ -185,11 +185,12 @@ class AIIntegration:
                 {"role": "system", "content": prompts.ASSESSMENT_SYSTEM_PROMPT},
                 {"role": "user", "content": user_prompt}
             ]
-            logger.debug(f"Sending prompt to OpenAI for strength assessment: {messages_to_send}")
+            logger.info("Sending prompt to OpenAI for strength assessment")
+
             response = openai.chat.completions.create(
                 model="gpt-5.2", # Use a more capable model for detailed assessment
                 messages=messages_to_send,
-                max_tokens=500, # Allow for a comprehensive assessment
+                max_completion_tokens=500, # Allow for a comprehensive assessment
             )
             assessment = response.choices[0].message.content.strip()
             logger.info(f"Generated strength assessment for {user.user_id}: {assessment}")

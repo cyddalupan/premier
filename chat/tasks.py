@@ -3,7 +3,7 @@ from celery import shared_task
 from django.conf import settings
 from .models import User, ChatLog, Question
 from .messenger_api import send_messenger_message
-from .utils import ai_integration_service, get_random_exam_question # Import from utils
+from .utils import ai_integration_service # Import from utils
 import datetime
 import random
 from django.utils import timezone # Import timezone utilities
@@ -69,10 +69,9 @@ def process_messenger_message(messaging_event):
                         sender_type='ADMIN_MANUAL',
                         message_content=admin_message
                     )
-                    user.last_admin_reply_timestamp = timezone.now()
-                    user.save()
-                    logger.info(f"Admin echo received and logged for user {user_psid_for_echo}. last_admin_reply_timestamp updated. Stopping AI processing.")
-                    return # STOP Processing for this message (admin override is active)
+                    user.save() # Save potential changes, but not last_admin_reply_timestamp here
+                    logger.info(f"Admin echo received and logged for user {user_psid_for_echo}. AI processing will continue.")
+                    # Do NOT return here, AI processing continues as normal
                 except User.DoesNotExist:
                     logger.warning(f"Admin echo received for unknown user {user_psid_for_echo}. Ignoring.")
                     return # User not in our system, nothing to do
@@ -113,12 +112,7 @@ def process_messenger_message(messaging_event):
             logger.error(f"Error getting/creating user or saving message for {sender_id}: {e}", exc_info=True)
             return
 
-        # Step 6: Admin Active Check (10-minute pause logic)
-        if user.last_admin_reply_timestamp:
-            time_difference = timezone.now() - user.last_admin_reply_timestamp # Use timezone.now()
-            if time_difference < datetime.timedelta(minutes=10):
-                logger.info(f"Admin active for user {sender_id}. Pausing AI response.")
-                return # STOP Processing for this message
+
 
 
 
@@ -205,13 +199,14 @@ def check_inactive_users():
     re_engagement_attempts = 0
 
     for user in eligible_users:
+        
         hours_since_last_interaction = (now - user.last_interaction_timestamp).total_seconds() / 3600
 
         # Determine the current stage the user is eligible for based on inactivity
         # This is the stage they *should* be in, not necessarily the one they've received a message for.
         current_eligible_stage_index = -1
         for i, (min_h, max_h) in enumerate(RE_ENGAGEMENT_INTERVALS):
-            if min_h <= hours_since_last_interaction < max_h:
+            if min_h < hours_since_last_interaction <= max_h:
                 current_eligible_stage_index = i
                 break
         
