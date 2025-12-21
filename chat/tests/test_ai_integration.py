@@ -72,7 +72,6 @@ class TestAIIntegration(TestCase):
         self.assertIn(self.user.summary, user_prompt_content)
         self.assertIn(self.conversation_history, user_prompt_content)
         self.assertNotIn('message_type', user_prompt_content) # Ensure message_type is no longer in prompt
-        self.assertEqual(call_kwargs['max_completion_tokens'], 100)
 
     @patch('openai.chat.completions.create', side_effect=openai.OpenAIError('API Error'))
     def test_generate_re_engagement_message_openai_error_fallback(self, mock_create):
@@ -97,6 +96,29 @@ class TestAIIntegration(TestCase):
         )
         self.assertEqual(message, 'Hi there! Just checking in. Let me know if you have any questions.')
         mock_create.assert_called_once()
+
+    @patch('chat.ai_integration.openai.chat.completions.create', side_effect=openai.OpenAIError('API Error Test Message for Chat Response'))
+    @patch('chat.ai_integration.get_prompt', side_effect=['System Prompt Content', 'Simple user prompt'])
+    def test_generate_chat_response_openai_error_logs_and_returns_none(self, mock_get_prompt, mock_create):
+        with self.assertLogs('chat', level='ERROR') as cm:
+            result = self.ai_integration_service.generate_chat_response(
+                user_id='test_user',
+                system_prompt_name='GENERAL_BOT_SYSTEM_PROMPT',
+                user_prompt_name='GENERAL_BOT_USER_PROMPT_TEMPLATE',
+                prompt_category='GENERAL_BOT',
+                prompt_context={'user_message': 'Hello'},
+            )
+
+            self.assertIsNone(result)
+            mock_create.assert_called_once()
+            # Assert that get_prompt was called for system and user prompts
+            self.assertEqual(mock_get_prompt.call_count, 2)
+
+            # Assert that the specific error message was logged
+            self.assertTrue(any(
+                "ERROR:chat.ai_integration:OpenAI API error during chat response generation: API Error Test Message for Chat Response" in log_entry
+                for log_entry in cm.output
+            ))
 
 
 class TestUserStrengthAssessment(TestCase):

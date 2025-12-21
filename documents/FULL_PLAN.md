@@ -7,7 +7,7 @@ Review Center AI Chatbot
 D. Message Processing Flow (Detailed Steps)
 The following steps outline the sequential processing of incoming messages, orchestrated by a queuing system:
     1.  **Queue Entry:** An incoming message is first placed into a processing queue.
-    1.1. **Initiate Typing Indicator:** Immediately send a `typing_on` sender action to the user via the Messenger API.
+    1.1. **Initiate Typing Indicator:** Immediately send a `typing_on` sender action to the user via the Messenger API. This action, like all Messenger API calls, will first check `User.is_messenger_reachable`. If the user is marked as unreachable, the API call will be skipped.
     2.  **Retrieve User FB ID:** Extract the Facebook PSID (user_id) from the message.
     3.  **Echo Check:** Determine if the message is an echo from Messenger. Echoes sent by the bot itself are ignored. Echoes originating from a human admin are logged (with sender_type: ADMIN_MANUAL), but AI processing continues without interruption.
     5.  **Get User Data:** Retrieve comprehensive user data based on the `fb_id`.
@@ -18,10 +18,18 @@ The following steps outline the sequential processing of incoming messages, orch
         *   **If the user is NOT in the Mock Exam stage AND NOT in the General Bot stage:**
             *   Generate and send a quick reply using a nano model, incorporating the current prompt and the last 3 messages.
     11. **Select Function:** Choose the appropriate function/handler based on the user's `current_stage`. Each stage has distinct rules and processing logic.
-    12. **Generate & Save Replies:** The selected function processes the message, potentially using a mini reasoning model, to generate one or more replies. Each generated reply is saved to the Chat Logs (with sender_type: SYSTEM_AI) and sent to the user via `send_messenger_message`. The `send_messenger_message` function will also send a `typing_off` sender action after successfully delivering the message.
+    12. **Generate & Save Replies:** The selected function processes the message, potentially using a mini reasoning model, to generate one or more replies. Each generated reply is saved to the Chat Logs (with sender_type: SYSTEM_AI) and sent to the user via `send_messenger_message`. The `send_messenger_message` function includes internal logic to check `User.is_messenger_reachable` before sending and will update this flag to `False` if the Messenger API reports the user as unreachable (e.g., 'No matching user found' error). A `typing_off` sender action is also sent, subject to the same reachability checks.
     13. **Context Summarization Check:** After all replies are generated and saved, check if the total number of uns summarized chat messages (USER, SYSTEM_AI, ADMIN_MANUAL) for this user exceeds 20.
         *   **If Yes:** Summarize the oldest 14 uns summarized messages, merge with the existing user summary, and update the user's summary field (ensuring it is less than 1,000 characters).
-    14. **Ensure Typing Indicator Off:** Regardless of success or failure, ensure a `typing_off` sender action is sent to the user via the Messenger API at the end of the processing flow.
+    14. **Ensure Typing Indicator Off:** Regardless of success or failure of the message processing flow, a `typing_off` sender action is sent to the user via the Messenger API. This call will also honor the `User.is_messenger_reachable` flag and will be skipped if the user is found to be unreachable.
+
+---
+
+**Messenger API Interaction Guidelines**
+To prevent errors with the Facebook Messenger API, particularly `(#100) No matching user found`, a `is_messenger_reachable` flag has been implemented in the `User` model (`chat/models.py`).
+
+*   **Reachability Check:** Before any Messenger API call (messages or sender actions) is made via functions like `send_messenger_message` or `send_sender_action` in `chat/messenger_api.py`, the `User.is_messenger_reachable` flag is checked. If this flag is `False`, the API call is skipped, and a warning is logged.
+*   **Flag Update:** If a Messenger API call results in an error indicating the user is unreachable (specifically, an API error with `code: 100` and `error_subcode: 2018001`, or a message containing "No matching user found"), the `User.is_messenger_reachable` flag for that user is automatically set to `False` in the database. This prevents future attempts to send messages or sender actions to an unreachable user.
 
 
 B. Context Management (Memory Optimization)

@@ -4,7 +4,7 @@ import unittest.mock as mock
 from datetime import datetime, timedelta
 from freezegun import freeze_time
 from chat.models import User, ChatLog # Import ChatLog as well
-from chat.tasks import check_inactive_users, RE_ENGAGEMENT_MESSAGE_TYPES, process_messenger_message
+from chat.tasks import check_inactive_users, process_messenger_message
 from django.conf import settings
 from django.utils import timezone # Import timezone utilities
 
@@ -15,7 +15,8 @@ settings.OPEN_AI_TOKEN = 'test_openai_token'
 
 class TestReEngagementCron(TestCase):
     def setUp(self):
-        self.now = timezone.make_aware(datetime(2025, 1, 1, 12, 0, 0))
+        self.fixed_now = timezone.make_aware(datetime(2025, 1, 1, 12, 0, 0)) # Fixed time for setUp
+        self.now = self.fixed_now # Align self.now with the fixed time
         
         # User active 1 hour ago - should NOT be re-engaged
         self.active_user = User.objects.create(
@@ -91,15 +92,17 @@ class TestReEngagementCron(TestCase):
         self.assertEqual(mock_generate_message.call_count, 2)
         mock_generate_message.assert_any_call(
             user_id=self.inactive_user_general.user_id,
+            first_name=self.inactive_user_general.first_name,
             current_stage=self.inactive_user_general.current_stage,
             user_summary=self.inactive_user_general.summary,
-            message_type=mock.ANY # Accept any message_type
+            conversation_history=mock.ANY
         )
         mock_generate_message.assert_any_call(
             user_id=self.inactive_user_marketing.user_id,
+            first_name=self.inactive_user_marketing.first_name,
             current_stage=self.inactive_user_marketing.current_stage,
             user_summary=self.inactive_user_marketing.summary,
-            message_type=mock.ANY # Accept any message_type
+            conversation_history=mock.ANY
         )
 
         # Ensure it was NOT called for active or mock_exam users
@@ -135,32 +138,8 @@ class TestReEngagementCron(TestCase):
         self.assertIsNone(self.user_no_timestamp.last_interaction_timestamp)
 
 
-    @freeze_time('2025-01-01 12:00:00')
-    @patch('chat.tasks.send_messenger_message')
-    @patch('chat.tasks.ai_integration_service.generate_re_engagement_message', return_value='AI-composed re-engagement message!')
-    @patch('random.choice', side_effect=lambda x: x[0])
-    def test_check_inactive_users_calls_with_random_message_type(self, mock_random_choice, mock_generate_message, mock_send_message):
 
 
-        check_inactive_users()
-
-        mock_random_choice.assert_called_with(RE_ENGAGEMENT_MESSAGE_TYPES)
-        self.assertEqual(mock_generate_message.call_count, 2)
-        
-        expected_message_type = RE_ENGAGEMENT_MESSAGE_TYPES[0]
-        
-        mock_generate_message.assert_any_call(
-            user_id=self.inactive_user_general.user_id,
-            current_stage=self.inactive_user_general.current_stage,
-            user_summary=self.inactive_user_general.summary,
-            message_type=expected_message_type
-        )
-        mock_generate_message.assert_any_call(
-            user_id=self.inactive_user_marketing.user_id,
-            current_stage=self.inactive_user_marketing.current_stage,
-            user_summary=self.inactive_user_marketing.summary,
-            message_type=expected_message_type
-        )
 
 
     @freeze_time('2025-01-01 12:00:00')
@@ -213,9 +192,8 @@ class TestReEngagementCron(TestCase):
     @patch('chat.tasks.send_messenger_message')
     @patch('chat.tasks.ChatLog.objects.create')
     @patch('chat.tasks.ai_integration_service.generate_re_engagement_message')
-    @patch('random.choice', side_effect=lambda x: x[0]) # Mock random.choice to always pick the first element
-    @patch('chat.tasks.User.objects.filter') # Patch User.objects.filter
-    def test_multi_stage_re_engagement_flow(self, mock_user_filter, mock_random_choice, mock_generate_message, mock_chat_log_create, mock_send_message):
+    @patch('chat.models.User.objects.filter') # Patch User.objects.filter
+    def test_multi_stage_re_engagement_flow(self, mock_user_filter, mock_generate_message, mock_chat_log_create, mock_send_message):
         user = User.objects.create(
             user_id='multi_stage_user_1',
             first_name='MultiStage',

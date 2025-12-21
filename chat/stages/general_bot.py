@@ -43,8 +43,7 @@ def handle_general_bot_stage(user, messaging_event):
                 system_prompt_name='GENERAL_BOT_SYSTEM_PROMPT',
                 user_prompt_name='GENERAL_BOT_USER_PROMPT_TEMPLATE',
                 prompt_category='GENERAL_BOT',
-                prompt_context=prompt_context,
-                max_completion_tokens=500
+                prompt_context=prompt_context
             )
             
             if ai_response:

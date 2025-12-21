@@ -39,6 +39,7 @@ class User(models.Model):
     re_engagement_stage_index = models.IntegerField(default=0, blank=True, null=True) # Tracks the current re-engagement stage (0 for none, 1 for stage 1, etc.)
     last_re_engagement_message_sent_at = models.DateTimeField(blank=True, null=True) # Timestamp of when the last re-engagement message was sent
     is_registered_website_user = models.BooleanField(default=False)
+    is_messenger_reachable = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.first_name} ({self.user_id})"

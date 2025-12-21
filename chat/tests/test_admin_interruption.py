@@ -23,9 +23,9 @@ class AdminInterruptionTest(TestCase):
         )
 
     @patch('chat.tasks.send_messenger_message') # Patch where it's used in tasks.py
-    @patch('chat.stages.general_bot.ai_integration_service.get_quick_reply')
-    def test_admin_interruption_ai_continues_response(self, mock_get_quick_reply, mock_send_messenger_message):
-        mock_get_quick_reply.return_value = 'Mocked quick reply text.'
+    @patch('chat.stages.general_bot.ai_integration_service.generate_chat_response')
+    def test_admin_interruption_ai_continues_response(self, mock_generate_chat_response, mock_send_messenger_message):
+        mock_generate_chat_response.return_value = 'Mocked general AI response text.'
 
         # Simulate an admin echo (user is the recipient of the admin message)
         admin_message_event = {
@@ -63,13 +63,13 @@ class AdminInterruptionTest(TestCase):
 
         # Reset mock for new assertions, as processing admin_message_event itself might have called send_messenger_message
         mock_send_messenger_message.reset_mock()
-        mock_get_quick_reply.reset_mock()
+        mock_generate_chat_response.reset_mock()
 
         process_messenger_message(user_message_event)
 
         # Assert that send_messenger_message WAS called (AI responded)
-        mock_get_quick_reply.assert_called_once()
+        mock_generate_chat_response.assert_called_once()
         mock_send_messenger_message.assert_called_once()
         args, kwargs = mock_send_messenger_message.call_args
         self.assertEqual(args[0], self.user.user_id)
-        self.assertEqual('Mocked quick reply text.', args[1])
+        self.assertEqual('Mocked general AI response text.', args[1])

@@ -9,12 +9,10 @@ logger = logging.getLogger(__name__)
 
 class AIIntegration:
     def __init__(self):
-        openai.api_key = settings.OPEN_AI_TOKEN
-        if not openai.api_key:
-            logger.error("OPEN_AI_TOKEN is not set in Django settings.")
-            raise ValueError("OPEN_AI_TOKEN is not set.")
+        pass
 
-    def generate_chat_response(self, user_id, system_prompt_name, user_prompt_name, prompt_category, prompt_context, model="gpt-5-mini", max_completion_tokens=500):
+
+    def generate_chat_response(self, user_id, system_prompt_name, user_prompt_name, prompt_category, prompt_context, model="gpt-5-mini"):
         """
         Generates a general chat response using a specified AI model and prompts.
         :param user_id: The ID of the user.
@@ -23,7 +21,6 @@ class AIIntegration:
         :param prompt_category: The category for prompt retrieval.
         :param prompt_context: A dictionary with values to format the user prompt.
         :param model: The AI model to use (defaults to gpt-5-mini).
-        :param max_completion_tokens: The maximum number of completion tokens (defaults to 200).
         :return: A string containing the AI's response, or None if an error occurs.
         """
         logger.info(f"Generating chat response for user {user_id} using prompts {system_prompt_name}, {user_prompt_name} in category {prompt_category}")
@@ -34,22 +31,22 @@ class AIIntegration:
             # Format the user prompt with the provided context
             formatted_user_prompt = user_prompt_template.format(**prompt_context)
 
+            print("DEBUG: Reached openai.chat.completions.create call in generate_chat_response.")
             response = openai.chat.completions.create(
                 model=model,
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": formatted_user_prompt}
                 ],
-                max_completion_tokens=max_completion_tokens,
             )
             reply = response.choices[0].message.content.strip()
             logger.info(f"Generated chat response: {reply}")
             return reply
         except openai.OpenAIError as e:
-            logger.error(f"OpenAI API error during chat response generation: {e}")
+            logger.error(f"OpenAI API error during chat response generation: {e}", exc_info=True)
             return None
         except Exception as e:
-            logger.error(f"Unexpected error during chat response generation: {e}")
+            logger.error(f"Unexpected error during chat response generation: {e}", exc_info=True)
             return None
 
     def get_quick_reply(self, user_id, conversation_history):
@@ -69,7 +66,6 @@ class AIIntegration:
                     {"role": "system", "content": get_prompt(name='QUICK_REPLY_SYSTEM_PROMPT', category='QUICK_REPLY')},
                     {"role": "user", "content": get_prompt(name='QUICK_REPLY_USER_PROMPT_TEMPLATE', category='QUICK_REPLY').format(conversation_history=conversation_history)}
                 ],
-                max_completion_tokens=50,
             )
             reply = response.choices[0].message.content.strip()
             logger.info(f"Generated quick reply: {reply}")
@@ -103,7 +99,6 @@ class AIIntegration:
             response = openai.chat.completions.create(
                 model="gpt-5-mini",
                 messages=prompt_messages,
-                max_completion_tokens=200, # Adjust based on expected summary length and input
             )
             summary = response.choices[0].message.content.strip()
             logger.info(f"Generated summary: {summary}")
@@ -177,7 +172,6 @@ class AIIntegration:
                     {"role": "system", "content": get_prompt(name='RE_ENGAGEMENT_SYSTEM_PROMPT', category='RE_ENGAGEMENT')},
                     {"role": "user", "content": user_prompt}
                 ],
-                max_completion_tokens=100, # Keep re-engagement messages concise
             )
             message = response.choices[0].message.content.strip()
             logger.info(f"Generated re-engagement message for {user_id}: {message}")

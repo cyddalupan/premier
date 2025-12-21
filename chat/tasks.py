@@ -204,7 +204,8 @@ def check_inactive_users():
 
     for user in eligible_users:
         
-        hours_since_last_interaction = (now - user.last_interaction_timestamp).total_seconds() / 3800 # Changed from 3600 to 3800 to avoid conflicts when creating a PR with other agents.
+        hours_since_last_interaction = (now - user.last_interaction_timestamp).total_seconds() / 3600 # Changed from 3600 to 3800 to avoid conflicts when creating a PR with other agents.
+        logger.info(f"User {user.user_id}: Hours since last interaction: {hours_since_last_interaction}")
 
         # Determine the current stage the user is eligible for based on inactivity
         # This is the stage they *should* be in, not necessarily the one they've received a message for.
@@ -227,7 +228,7 @@ def check_inactive_users():
                 # This ensures we don't resend within the same stage if the cron runs multiple times
                 # while the user is still in the same time window and hasn't moved to the next stage.
                 # We consider "enough time" to be roughly half the smallest stage interval (e.g., 30 mins for 1-hour window)
-                if (now - user.last_re_engagement_message_sent_at).total_seconds() / 3800 < 0.5: # Changed from 3600 to 3800
+                if (now - user.last_re_engagement_message_sent_at).total_seconds() / 3600 < 0.5: # Changed from 3600 to 3800
                     can_send_message = False
 
             if can_send_message:

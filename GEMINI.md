@@ -23,6 +23,7 @@ This project is a Django application (`premier`) serving as a backend for a "Law
 3.  **Environment Variables:**
     Create a `.env` file for database credentials (e.g., `MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_HOST`, `MYSQL_PORT`).
     **AI API Keys:** Include `OPEN_AI_TOKEN` for AI model authentication.
+    **Note on WSGI/Apache:** For proper loading of `.env` variables in a WSGI environment (e.g., when running with Apache/mod_wsgi), ensure `load_dotenv()` is explicitly called in your `premier/wsgi.py` file *before* Django settings are configured. This prevents issues where critical variables like `OPEN_AI_TOKEN` are not found.
 4.  **Database Migrations:**
     ```bash
     python manage.py migrate
@@ -80,6 +81,7 @@ This project is a Django application (`premier`) serving as a backend for a "Law
     *   Keep tests focused, testing one piece of functionality per test method.
     *   Use Django's `TestCase` or `TransactionTestCase` as appropriate for database interactions.
     *   Mock external dependencies (like API calls) to ensure tests are fast and reliable.
+    *   **`unittest.mock` Best Practices:** When using `@patch` decorators, ensure the order of mock arguments in the test function matches the reverse order of the decorators. Always update `assert_called_once_with` or `assert_any_call` arguments when the underlying mocked function's signature changes, providing all expected arguments (or `mock.ANY` for less critical ones). This prevents `TypeError`s and `AssertionError`s due to argument mismatches during testing.
 
 2.  **Manual Testing:**
     *   After making code changes and running unit tests, it is often necessary to perform manual testing.
@@ -109,6 +111,9 @@ A dedicated, shared module will handle all interactions with Artificial Intellig
 -   **General AI Tasks (Quick Replies, Summarization):** `gpt-5-mini`
 -   **Exam Grading:** `gpt-5.2`
 -   **Note on AI Model Parameters:** The `temperature` parameter has been removed from all AI model configurations (e.g., in `chat/ai_integration.py`). This is because not all models consistently support the `temperature` parameter, and some may only allow a default value of 1. Removing it ensures broader compatibility and prevents `invalid_request_error` issues.
+
+## Time Calculation Best Practices
+For any time-dependent logic, especially within background tasks or re-engagement flows, it is critical to use precise time units. For example, when converting seconds to hours, always use `3600` (seconds in an hour) as the divisor. Arbitrarily altering such constants (e.g., to `3800`) will lead to subtle bugs, incorrect timing, and features failing to trigger as expected. Prefer using Python's `datetime` and `timedelta` objects for robust time arithmetic.
 
 ## Logic Separation
 To maintain a clean and modular codebase, the complex business logic associated with processing chat messages will be externalized into separate functions and files. The initial chat message ingestion point will primarily delegate tasks to these external functions, keeping the ingestion layer lean and focused. This approach supports reusability, testability, and adherence to the Single Responsibility Principle.
