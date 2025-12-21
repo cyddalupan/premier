@@ -92,3 +92,31 @@ class ExamResult(models.Model):
 
     def __str__(self):
         return f"Exam Result for {self.user.first_name} on Question {self.question.id} - Score: {self.score}"
+
+class Prompt(models.Model):
+    # Define choices for categories based on the identified prompt types
+    CATEGORY_CHOICES = [
+        ('QUICK_REPLY', 'Quick Reply'),
+        ('SUMMARIZATION', 'Summarization'),
+        ('EXAM_GRADING', 'Exam Grading'),
+        ('RE_ENGAGEMENT', 'Re-engagement'),
+        ('ASSESSMENT', 'User Strength Assessment'),
+        ('NAME_EXTRACTION', 'Name Extraction'),
+        # Add other categories as identified from prompts.py or FULL_PLAN.md
+    ]
+
+    name = models.CharField(max_length=255, unique=True, help_text="Unique identifier for the prompt (e.g., QUICK_REPLY_SYSTEM_PROMPT). This should match the constant name in chat/prompts.py")
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, help_text="Category of the prompt (e.g., QUICK_REPLY)")
+    text_content = models.TextField(help_text="The actual content of the prompt, potentially with placeholders")
+    description = models.TextField(blank=True, null=True, help_text="Optional description of the prompt's purpose")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "AI Prompt"
+        verbose_name_plural = "AI Prompts"
+        ordering = ['category', 'name']
+
+    def __str__(self):
+        return f"{self.category}: {self.name}"
+

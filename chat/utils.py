@@ -1,12 +1,11 @@
-from .ai_integration import AIIntegration
-from .models import Question
 import random
 import logging
+from .models import Question # Added import for Question model
 
 logger = logging.getLogger(__name__)
 
-# Initialize AIIntegration outside tasks to reuse the instance
-ai_integration_service = AIIntegration()
+# ai_integration_service will now be imported and instantiated directly where needed
+# e.g., in tasks.py or tests.py to avoid circular dependencies.
 
 def get_random_exam_question():
     """
@@ -52,4 +51,47 @@ def generate_persuasion_messages(user, context):
             messages.append("It's a powerful tool to enhance your bar exam preparation!")
     
     return messages
+
+from django.core.cache import cache
+from .models import Prompt
+import chat.prompts # Import the module containing fallback prompts
+
+def get_prompt(name: str, category: str, use_fallback: bool = True) -> str:
+    """
+    Retrieves a prompt, prioritizing the database, then cache, then falling back to code.
+    Args:
+        name (str): The unique name of the prompt (e.g., 'QUICK_REPLY_SYSTEM_PROMPT').
+        category (str): The category of the prompt (e.g., 'QUICK_REPLY').
+        use_fallback (bool): Whether to use the hardcoded prompts as a fallback if not found in DB/cache.
+
+    Returns:
+        str: The content of the prompt.
+
+    Raises:
+        ValueError: If the prompt is not found in the database, cache, or code fallback.
+    """
+    cache_key = f"prompt:{category}:{name}"
+    prompt_content = cache.get(cache_key)
+
+    if prompt_content is not None:
+        return prompt_content
+
+    try:
+        db_prompt = Prompt.objects.get(name=name, category=category)
+        prompt_content = db_prompt.text_content
+        cache.set(cache_key, prompt_content, timeout=3600)  # Cache for 1 hour
+        return prompt_content
+    except Prompt.DoesNotExist:
+        logger.warning(f"Prompt '{name}' (Category: {category}) not found in database. Attempting code fallback.")
+        if use_fallback:
+            try:
+                # Attempt to get from chat.prompts module
+                prompt_content = getattr(chat.prompts, name)
+                cache.set(cache_key, prompt_content, timeout=3600)  # Cache for 1 hour
+                return prompt_content
+            except AttributeError:
+                pass # Fall through to ValueError
+        raise ValueError(f"Prompt '{name}' (Category: {category}) not found in database or code fallback.")
+
+
 

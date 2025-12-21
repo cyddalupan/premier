@@ -1,8 +1,12 @@
 import logging
-from ..utils import ai_integration_service, generate_persuasion_messages
+from ..utils import generate_persuasion_messages
 from ..models import User, ChatLog # Import User and ChatLog models
+from ..ai_integration import AIIntegration # Import AIIntegration directly
 
 logger = logging.getLogger(__name__)
+
+# Instantiate AIIntegration for use within this stage handler
+ai_integration_service = AIIntegration()
 
 def handle_general_bot_stage(user, messaging_event):
     """
@@ -28,20 +32,26 @@ def handle_general_bot_stage(user, messaging_event):
             last_messages = ChatLog.objects.filter(user=user).order_by('-timestamp')[:5]
             conversation_context = "\n".join([f"{log.sender_type}: {log.message_content}" for log in last_messages[::-1]])
             
-            ai_response = ai_integration_service.get_quick_reply(
+            prompt_context = {
+                'user_first_name': user.first_name,
+                'user_summary': user.summary if user.summary else "The user has not provided any specific preferences or context yet.",
+                'message_text': message_text,
+                'conversation_history': conversation_context
+            }
+            ai_response = ai_integration_service.generate_chat_response(
                 user_id=user.user_id,
-                conversation_history=conversation_context + f"\nUser: {message_text}"
+                system_prompt_name='GENERAL_BOT_SYSTEM_PROMPT',
+                user_prompt_name='GENERAL_BOT_USER_PROMPT_TEMPLATE',
+                prompt_category='GENERAL_BOT',
+                prompt_context=prompt_context,
+                max_completion_tokens=500
             )
             
             if ai_response:
                 response_messages.append(ai_response)
             else:
-                fallback_message = "I'm sorry, I couldn't process that query at the moment. Can you please rephrase?"
+                fallback_message = "I'm sorry, I couldn't process that query at the moment. Can you please rephrase or ask for help on a different topic?"
                 response_messages.append(fallback_message)
-                # If AI response is a fallback and user is not registered, inject general chat persuasion
-                if not user.is_registered_website_user:
-                    persuasion_msgs = generate_persuasion_messages(user, 'general_chat')
-                    response_messages.extend(persuasion_msgs)
         else:
             response_messages.append("I'm here to help! What's on your mind?")
     

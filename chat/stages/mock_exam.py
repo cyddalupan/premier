@@ -1,13 +1,19 @@
 import logging
+from django.db import transaction
 from ..models import User, Question
-from ..utils import ai_integration_service, get_random_exam_question, generate_persuasion_messages
+from ..utils import get_random_exam_question, generate_persuasion_messages
+from ..ai_integration import AIIntegration # Import AIIntegration directly
 
 logger = logging.getLogger(__name__)
+
+# Instantiate AIIntegration for use within this stage handler
+ai_integration_service = AIIntegration()
 
 def handle_mock_exam_stage(user, messaging_event):
     """
     Handles the logic for the MOCK_EXAM stage.
     """
+    # The user object is already locked by the process_messenger_message transaction
     logger.info(f"Handling MOCK_EXAM stage for user {user.user_id}, counter: {user.exam_question_counter}")
     message_text = messaging_event.get('message', {}).get('text')
     response_messages = []

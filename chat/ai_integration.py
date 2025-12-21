@@ -2,7 +2,7 @@ import os
 import openai
 import logging
 from django.conf import settings
-from . import prompts
+from chat.utils import get_prompt
 import json
 
 logger = logging.getLogger(__name__)
@@ -13,6 +13,44 @@ class AIIntegration:
         if not openai.api_key:
             logger.error("OPEN_AI_TOKEN is not set in Django settings.")
             raise ValueError("OPEN_AI_TOKEN is not set.")
+
+    def generate_chat_response(self, user_id, system_prompt_name, user_prompt_name, prompt_category, prompt_context, model="gpt-5-mini", max_completion_tokens=500):
+        """
+        Generates a general chat response using a specified AI model and prompts.
+        :param user_id: The ID of the user.
+        :param system_prompt_name: The name of the system prompt to retrieve.
+        :param user_prompt_name: The name of the user prompt template to retrieve.
+        :param prompt_category: The category for prompt retrieval.
+        :param prompt_context: A dictionary with values to format the user prompt.
+        :param model: The AI model to use (defaults to gpt-5-mini).
+        :param max_completion_tokens: The maximum number of completion tokens (defaults to 200).
+        :return: A string containing the AI's response, or None if an error occurs.
+        """
+        logger.info(f"Generating chat response for user {user_id} using prompts {system_prompt_name}, {user_prompt_name} in category {prompt_category}")
+        try:
+            system_prompt = get_prompt(name=system_prompt_name, category=prompt_category)
+            user_prompt_template = get_prompt(name=user_prompt_name, category=prompt_category)
+            
+            # Format the user prompt with the provided context
+            formatted_user_prompt = user_prompt_template.format(**prompt_context)
+
+            response = openai.chat.completions.create(
+                model=model,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": formatted_user_prompt}
+                ],
+                max_completion_tokens=max_completion_tokens,
+            )
+            reply = response.choices[0].message.content.strip()
+            logger.info(f"Generated chat response: {reply}")
+            return reply
+        except openai.OpenAIError as e:
+            logger.error(f"OpenAI API error during chat response generation: {e}")
+            return None
+        except Exception as e:
+            logger.error(f"Unexpected error during chat response generation: {e}")
+            return None
 
     def get_quick_reply(self, user_id, conversation_history):
         """
@@ -28,8 +66,8 @@ class AIIntegration:
             response = openai.chat.completions.create(
                 model="gpt-5-mini", # Or a more "nano" model if available and suitable
                 messages=[
-                    {"role": "system", "content": prompts.QUICK_REPLY_SYSTEM_PROMPT},
-                    {"role": "user", "content": prompts.QUICK_REPLY_USER_PROMPT_TEMPLATE.format(conversation_history=conversation_history)}
+                    {"role": "system", "content": get_prompt(name='QUICK_REPLY_SYSTEM_PROMPT', category='QUICK_REPLY')},
+                    {"role": "user", "content": get_prompt(name='QUICK_REPLY_USER_PROMPT_TEMPLATE', category='QUICK_REPLY').format(conversation_history=conversation_history)}
                 ],
                 max_completion_tokens=50,
             )
@@ -55,12 +93,12 @@ class AIIntegration:
         # Placeholder for actual AI call
         try:
             prompt_messages = [
-                {"role": "system", "content": prompts.SUMMARIZE_SYSTEM_PROMPT},
+                {"role": "system", "content": get_prompt(name='SUMMARIZE_SYSTEM_PROMPT', category='SUMMARIZATION')},
             ]
             if existing_summary:
-                prompt_messages.append({"role": "user", "content": prompts.SUMMARIZE_USER_PROMPT_WITH_EXISTING_SUMMARY_TEMPLATE.format(existing_summary=existing_summary, conversation_chunk=conversation_chunk)})
+                prompt_messages.append({"role": "user", "content": get_prompt(name='SUMMARIZE_USER_PROMPT_WITH_EXISTING_SUMMARY_TEMPLATE', category='SUMMARIZATION').format(existing_summary=existing_summary, conversation_chunk=conversation_chunk)})
             else:
-                prompt_messages.append({"role": "user", "content": prompts.SUMMARIZE_USER_PROMPT_WITHOUT_EXISTING_SUMMARY_TEMPLATE.format(conversation_chunk=conversation_chunk)})
+                prompt_messages.append({"role": "user", "content": get_prompt(name='SUMMARIZE_USER_PROMPT_WITHOUT_EXISTING_SUMMARY_TEMPLATE', category='SUMMARIZATION').format(conversation_chunk=conversation_chunk)})
 
             response = openai.chat.completions.create(
                 model="gpt-5-mini",
@@ -90,11 +128,11 @@ class AIIntegration:
         # Placeholder for actual AI call
         try:
             # Construct a detailed prompt for grading
-            prompt = prompts.GRADE_EXAM_USER_PROMPT_TEMPLATE.format(question_text=question_text, user_answer=user_answer, expected_answer=expected_answer)
+            prompt = get_prompt(name='GRADE_EXAM_USER_PROMPT_TEMPLATE', category='EXAM_GRADING').format(question_text=question_text, user_answer=user_answer, expected_answer=expected_answer)
             response = openai.chat.completions.create(
                 model="gpt-5.2", # Use a more capable model for grading
                 messages=[
-                    {"role": "system", "content": prompts.GRADE_EXAM_SYSTEM_PROMPT},
+                    {"role": "system", "content": get_prompt(name='GRADE_EXAM_SYSTEM_PROMPT', category='EXAM_GRADING')},
                     {"role": "user", "content": prompt}
                 ],
                 max_completion_tokens=500,
@@ -115,26 +153,28 @@ class AIIntegration:
             logger.error(f"Unexpected error during exam grading: {e}")
             return {"error": "An unexpected error occurred."}
 
-    def generate_re_engagement_message(self, user_id, current_stage, user_summary, message_type):
+    def generate_re_engagement_message(self, user_id, first_name, current_stage, user_summary, conversation_history):
         """
-        Generates a re-engagement message using a general AI model, specific to a message type.
+        Generates a re-engagement message using a general AI model.
         :param user_id: The ID of the user.
+        :param first_name: The first name of the user.
         :param current_stage: The current stage of the user (e.g., ONBOARDING, MARKETING).
         :param user_summary: The AI-generated summary of the user's persona and history.
-        :param message_type: The type of re-engagement message to generate (e.g., "Trivia/Fun Fact").
+        :param conversation_history: A formatted string of recent conversation history.
         :return: A generated re-engagement message.
         """
-        logger.info(f"Generating '{message_type}' re-engagement message for user {user_id} in stage {current_stage}")
+        logger.info(f"Generating re-engagement message for user {user_id} in stage {current_stage}")
         try:
-            user_prompt = prompts.RE_ENGAGEMENT_USER_PROMPT_TEMPLATE.format(
+            user_prompt = get_prompt(name='RE_ENGAGEMENT_USER_PROMPT_TEMPLATE', category='RE_ENGAGEMENT').format(
+                first_name=first_name if first_name else "there",
                 current_stage=current_stage,
                 user_summary=user_summary if user_summary else "No summary available.",
-                message_type=message_type
+                conversation_history=conversation_history if conversation_history else "No recent conversation history."
             )
             response = openai.chat.completions.create(
                 model="gpt-5-mini",
                 messages=[
-                    {"role": "system", "content": prompts.RE_ENGAGEMENT_SYSTEM_PROMPT},
+                    {"role": "system", "content": get_prompt(name='RE_ENGAGEMENT_SYSTEM_PROMPT', category='RE_ENGAGEMENT')},
                     {"role": "user", "content": user_prompt}
                 ],
                 max_completion_tokens=100, # Keep re-engagement messages concise
@@ -180,9 +220,9 @@ class AIIntegration:
         logger.info(f"Categorized scores for user {user.user_id}:\n{categorized_scores_str}")
 
         try:
-            user_prompt = prompts.ASSESSMENT_USER_PROMPT_TEMPLATE.format(categorized_scores=categorized_scores_str)
+            user_prompt = get_prompt(name='ASSESSMENT_USER_PROMPT_TEMPLATE', category='ASSESSMENT').format(categorized_scores=categorized_scores_str)
             messages_to_send = [
-                {"role": "system", "content": prompts.ASSESSMENT_SYSTEM_PROMPT},
+                {"role": "system", "content": get_prompt(name='ASSESSMENT_SYSTEM_PROMPT', category='ASSESSMENT')},
                 {"role": "user", "content": user_prompt}
             ]
             logger.info("Sending prompt to OpenAI for strength assessment")
@@ -213,8 +253,8 @@ class AIIntegration:
             response = openai.chat.completions.create(
                 model="gpt-5.2", # Upgraded model for improved name extraction
                 messages=[
-                    {"role": "system", "content": prompts.NAME_EXTRACTION_SYSTEM_PROMPT},
-                    {"role": "user", "content": prompts.NAME_EXTRACTION_USER_PROMPT_TEMPLATE.format(message_text=message_text)}
+                    {"role": "system", "content": get_prompt(name='NAME_EXTRACTION_SYSTEM_PROMPT', category='NAME_EXTRACTION')},
+                    {"role": "user", "content": get_prompt(name='NAME_EXTRACTION_USER_PROMPT_TEMPLATE', category='NAME_EXTRACTION').format(message_text=message_text)}
                 ],
                 max_completion_tokens=20 # A name should not be very long
             )

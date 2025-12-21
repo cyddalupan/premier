@@ -52,7 +52,34 @@ This project is a Django application (`premier`) serving as a backend for a "Law
 1.  **Test-Driven Development (TDD):**
     *   For every code change, unit tests should be written and executed. This project adheres to a TDD approach.
     *   While temporary test code may be used during development, it is crucial to retain all important and useful unit tests as permanent regression tests.
-    *   To run tests: `python manage.py test`
+
+## Testing Workflow
+
+### Running Tests
+*   **Run all tests for a specific app (e.g., `chat`):**
+    ```bash
+    python manage.py test chat.tests
+    ```
+    *Note: If you encounter an `ImportError` related to `chat/tests`, try clearing the `__pycache__` directories within the `chat/` and `chat/tests/` folders before running tests again: `find chat/ -name "__pycache__" -exec rm -rf {} +`*
+*   **Run a specific test file (e.g., `test_models.py` in the `chat` app):**
+    ```bash
+    python manage.py test chat.tests.test_models
+    ```
+*   **Run all tests in the project:**
+    ```bash
+    python manage.py test
+    ```
+
+### Writing Tests
+*   **Location:** New test files for an app (e.g., `chat`) should be placed in the `app_name/tests/` directory (e.g., `chat/tests/`).
+*   **Naming Convention:** Test files should start with `test_` (e.g., `test_my_feature.py`).
+*   **Test Cases:** Each test file should contain one or more `unittest.TestCase` classes or simple test functions if using `pytest` (though `unittest` is the primary framework here).
+*   **Best Practices:**
+    *   Adhere to TDD principles: write tests before writing the code they test.
+    *   Ensure comprehensive coverage for new features and bug fixes.
+    *   Keep tests focused, testing one piece of functionality per test method.
+    *   Use Django's `TestCase` or `TransactionTestCase` as appropriate for database interactions.
+    *   Mock external dependencies (like API calls) to ensure tests are fast and reliable.
 
 2.  **Manual Testing:**
     *   After making code changes and running unit tests, it is often necessary to perform manual testing.
