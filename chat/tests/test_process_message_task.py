@@ -42,10 +42,7 @@ class ProcessMessengerMessageTaskTests(TestCase):
 
         # Assert typing_on is called once at the start
         mock_send_sender_action.assert_any_call(self.user_id, 'typing_on')
-        self.assertEqual(mock_send_sender_action.call_count, 2) # typing_on and typing_off
-
-        # Assert typing_off is called once at the end
-        mock_send_sender_action.assert_called_with(self.user_id, 'typing_off')
+        self.assertEqual(mock_send_sender_action.call_count, 1) # Only typing_on is expected
         
         # Verify message processing happened
         self.assertTrue(ChatLog.objects.filter(user=self.user, sender_type='USER', message_content='Hello, bot!').exists())
@@ -69,11 +66,8 @@ class ProcessMessengerMessageTaskTests(TestCase):
         # Assert typing_on is called once at the start
         mock_send_sender_action.assert_any_call(self.user_id, 'typing_on')
         
-        # Assert typing_off is called once at the end, even with an error
-        mock_send_sender_action.assert_called_with(self.user_id, 'typing_off')
-        
-        # Ensure it was called exactly twice (on and off)
-        self.assertEqual(mock_send_sender_action.call_count, 2)
+        # Ensure it was called exactly once (on)
+        self.assertEqual(mock_send_sender_action.call_count, 1)
         
         mock_send_messenger_message.assert_not_called() # No message should be sent if an error occurs early
 

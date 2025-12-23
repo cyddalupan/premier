@@ -73,7 +73,7 @@ WSGI_APPLICATION = 'premier.wsgi.application'
 
 import os
 from dotenv import load_dotenv
-from datetime import timedelta # Add this import
+
 
 
 load_dotenv()
@@ -98,31 +98,7 @@ DATABASES = {
 }
 
 
-# Celery Configuration
-CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
-CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'UTC' # Use the same timezone as Django
 
-# New robust settings
-CELERY_WORKER_PREFETCH_MULTIPLIER = 1
-CELERY_WORKER_MAX_TASKS_PER_CHILD = 100
-CELERY_TASK_ACKS_LATE = True
-CELERY_WORKER_MAX_MEMORY_PER_CHILD = 500000 # in KB (e.g., 500MB)
-CELERY_TASK_SEND_SENT_EVENT = True
-CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
-CELERY_BROKER_HEARTBEAT = 10
-CELERY_TASK_STARTS_OUT_OF_BAND = True
-
-# Celery Beat Schedule
-CELERY_BEAT_SCHEDULE = {
-    'check-inactive-users-daily': {
-        'task': 'chat.tasks.check_inactive_users', # Task name to be created
-        'schedule': timedelta(days=1), # Run once every day
-    },
-}
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -176,20 +152,33 @@ LOGGING = {
     },
     'handlers': {
         'console': {
-            'level': 'INFO',
+            'level': 'WARNING',
             'class': 'logging.StreamHandler',
             'formatter': 'simple'
+        },
+        'task_queue_file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR / 'logs' / 'task_queue.log',
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 5,
+            'formatter': 'verbose',
         },
     },
     'loggers': {
         'chat': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': 'WARNING',
             'propagate': False,
         },
         'django': {
             'handlers': ['console'],
-            'level': 'INFO',
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        'task_queue': {
+            'handlers': ['task_queue_file'],
+            'level': 'DEBUG',
             'propagate': False,
         },
     },

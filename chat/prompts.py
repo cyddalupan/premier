@@ -118,3 +118,28 @@ User: 'I'd like to ask a question.' -> Response: '[NO_NAME]'
 """
 NAME_EXTRACTION_USER_PROMPT_TEMPLATE = "Extract the name from the following text: '{message_text}'"
 
+# Loading Messages
+LOADING_MESSAGES = [
+    "Loading your data... 🔄",
+    "Preparing the system... ⚙️",
+    "Fetching your results... 📥",
+    "Connecting to the server... 🌐",
+    "Processing, please wait... ⏳",
+    "Generating your view... 🖼️",
+    "Finalizing the setup... ✅",
+    "Syncing latest info... 📡",
+    "Retrieving records... 📂",
+    "Initializing modules... 🚀",
+    "Verifying the data... 🔍",
+    "Compiling your request... 🛠️",
+    "Building the page... 🏗️",
+    "Buffering resources... ⚡",
+    "Updating the feed... 📤",
+    "Securing connection... 🔒",
+    "Sorting the details... 🗂️",
+    "Calculating results... 🧮",
+    "Reaching the database... 🗄️",
+    "Finishing the task... ✨",
+]
+
+

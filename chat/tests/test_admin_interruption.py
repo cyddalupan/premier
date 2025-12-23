@@ -44,10 +44,13 @@ class AdminInterruptionTest(TestCase):
         # Process the admin echo
         process_messenger_message(admin_message_event)
 
-        # Assert that the admin message is logged as ADMIN_MANUAL
+        # Assert that the admin message is NOT logged as ADMIN_MANUAL
         chat_log = ChatLog.objects.filter(user=self.user, sender_type='ADMIN_MANUAL').first()
-        self.assertIsNotNone(chat_log)
-        self.assertEqual(chat_log.message_content, 'Admin reply')
+        self.assertIsNone(chat_log)
+        # We also assert that no other processing happened for the echo.
+        # The return in process_messenger_message means no further mocks should have been called.
+        mock_generate_chat_response.assert_not_called()
+        mock_send_messenger_message.assert_not_called()
 
         # Simulate a user message after the admin echo
         user_message_event = {

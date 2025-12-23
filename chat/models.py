@@ -1,5 +1,6 @@
 from django.db import models
 from legal.models import Course # Import the Course model
+from django.utils import timezone # Import timezone for default date
 
 class User(models.Model):
     # Enum for current_stage
@@ -40,6 +41,10 @@ class User(models.Model):
     last_re_engagement_message_sent_at = models.DateTimeField(blank=True, null=True) # Timestamp of when the last re-engagement message was sent
     is_registered_website_user = models.BooleanField(default=False)
     is_messenger_reachable = models.BooleanField(default=True)
+
+    # New fields for gpt-5.2 usage tracking
+    gpt_5_2_daily_count = models.IntegerField(default=0)
+    gpt_5_2_last_reset_date = models.DateField(default=timezone.now)
 
     def __str__(self):
         return f"{self.first_name} ({self.user_id})"

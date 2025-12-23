@@ -1,6 +1,8 @@
 import random
 import logging
-from .models import Question # Added import for Question model
+from .models import Question, User # Added import for Question model, User model for GPT-5.2 usage tracking
+from django.utils import timezone # Added import for timezone
+import chat.prompts # Import for LOADING_MESSAGES
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +24,12 @@ def get_random_exam_question():
 
     logger.warning("No valid exam questions found with complete data (expected_answer).")
     return None
+
+def get_random_loading_message() -> str:
+    """
+    Returns a random loading message from the predefined list.
+    """
+    return random.choice(chat.prompts.LOADING_MESSAGES)
 
 def generate_persuasion_messages(user, context):
     """
@@ -92,6 +100,17 @@ def get_prompt(name: str, category: str, use_fallback: bool = True) -> str:
             except AttributeError:
                 pass # Fall through to ValueError
         raise ValueError(f"Prompt '{name}' (Category: {category}) not found in database or code fallback.")
+
+def reset_gpt_5_2_usage_if_new_day(user: User):
+    """
+    Resets the user's gpt_5_2_daily_count if a new UTC day has started.
+    """
+    today_utc = timezone.now().date()
+    if user.gpt_5_2_last_reset_date != today_utc:
+        user.gpt_5_2_daily_count = 0
+        user.gpt_5_2_last_reset_date = today_utc
+        user.save()
+        logger.info(f"User {user.user_id}: GPT-5.2 daily count reset for a new day.")
 
 
 

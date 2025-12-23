@@ -2,7 +2,8 @@ import os
 import openai
 import logging
 from django.conf import settings
-from chat.utils import get_prompt
+from chat.utils import get_prompt, reset_gpt_5_2_usage_if_new_day # Import the new utility function
+from chat.models import User # Import the User model
 import json
 
 logger = logging.getLogger(__name__)
@@ -10,7 +11,6 @@ logger = logging.getLogger(__name__)
 class AIIntegration:
     def __init__(self):
         pass
-
 
     def generate_chat_response(self, user_id, system_prompt_name, user_prompt_name, prompt_category, prompt_context, model="gpt-5-mini"):
         """
@@ -24,6 +24,28 @@ class AIIntegration:
         :return: A string containing the AI's response, or None if an error occurs.
         """
         logger.info(f"Generating chat response for user {user_id} using prompts {system_prompt_name}, {user_prompt_name} in category {prompt_category}")
+        
+        user = None
+        try:
+            user = User.objects.get(user_id=user_id)
+        except User.DoesNotExist:
+            logger.error(f"User with ID {user_id} not found during chat response generation.")
+            return None
+
+        # --- GPT-5.2 Usage Limit Logic for GENERAL_BOT ---
+        if user.current_stage == 'GENERAL_BOT':
+            reset_gpt_5_2_usage_if_new_day(user) # Reset count if new day
+
+            if user.gpt_5_2_daily_count < 10:
+                model = "gpt-5.2"
+                user.gpt_5_2_daily_count += 1
+                user.save() # Save the updated count
+                logger.info(f"User {user_id}: Using gpt-5.2. Daily count: {user.gpt_5_2_daily_count}")
+            else:
+                model = "gpt-5-mini" # Fallback
+                logger.info(f"User {user_id}: GPT-5.2 daily limit reached. Falling back to gpt-5-mini.")
+        # --- End GPT-5.2 Usage Limit Logic ---
+        
         try:
             system_prompt = get_prompt(name=system_prompt_name, category=prompt_category)
             user_prompt_template = get_prompt(name=user_prompt_name, category=prompt_category)
@@ -31,7 +53,7 @@ class AIIntegration:
             # Format the user prompt with the provided context
             formatted_user_prompt = user_prompt_template.format(**prompt_context)
 
-            print("DEBUG: Reached openai.chat.completions.create call in generate_chat_response.")
+
             response = openai.chat.completions.create(
                 model=model,
                 messages=[

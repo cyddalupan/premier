@@ -1,13 +1,11 @@
 import logging
-from celery import shared_task
 from django.conf import settings
 from .models import User, ChatLog, Question
 from .messenger_api import send_messenger_message, send_sender_action
 from .ai_integration import AIIntegration # Import AIIntegration directly
-# import datetime # Removed unused import
-# import random # Removed unused import
 from django.utils import timezone # Import timezone utilities
 from django.db import transaction # ADD THIS IMPORT
+from chat.task_queue import enqueue_task # NEW: Import enqueue_task
 
 # Instantiate AIIntegration for use within tasks
 ai_integration_service = AIIntegration()
@@ -27,10 +25,9 @@ RE_ENGAGEMENT_INTERVALS = [
     (21, 22),  # Stage 4: 21 to 22 hours
 ]
 
-@shared_task
-def process_messenger_message(messaging_event):
+def process_messenger_message(messaging_event): # Removed @shared_task
     """
-    Celery task to process incoming Facebook Messenger messaging events.
+    Function to process incoming Facebook Messenger messaging events.
     This task encapsulates the detailed message processing flow.
     """
     sender_id = None # Initialize sender_id outside try block for finally access
@@ -48,6 +45,28 @@ def process_messenger_message(messaging_event):
 
         logger.info(f"Processing message event for sender_id: {sender_id}, is_echo: {is_echo}, message_text: {message_text}")
 
+        # Step 3: Echo Check (Admin Manual Override)
+        if is_echo:
+            # An echo event means our Page sent a message.
+            # `sender_id` will be the Page ID, `recipient_id` will be the user's PSID.
+
+            # If the app_id in the message matches our FACEBOOK_APP_ID, it's our own bot's message.
+            if message.get('app_id') and str(message.get('app_id')) == settings.FACEBOOK_APP_ID:
+                logger.info(f"Received echo of our own message to user {messaging_event['recipient']['id']}. Ignoring completely.")
+                return # Ignore our own echoes, don't process further at all
+
+            else:
+                # This is an echo from a different app_id, potentially a human admin
+                # Given the user's statement "removed the echo feature already",
+                # we will completely ignore admin echoes as well to prevent any unintended processing.
+                user_psid_for_echo = messaging_event['recipient']['id']
+                logger.info(f"Received echo message (potentially admin reply) for user {user_psid_for_echo}. Ignoring completely per user instruction.")
+                return # Ignore all echoes for now as per user's "removed the echo feature"
+
+        # If we reach here, it's a non-echo message from a user.
+        # The typing_on indicator is already sent by the webhook_callback in views.py.
+        # No need to send it again here.
+
         with transaction.atomic():
             user = None # Initialize user outside the try block
             
@@ -61,42 +80,6 @@ def process_messenger_message(messaging_event):
                 user = User.objects.create(user_id=sender_id)
                 created = True
                 logger.info(f"New user created: {sender_id}")
-
-            # Step 3: Echo Check (Admin Manual Override)
-            if is_echo:
-                # An echo event means our Page sent a message.
-                # `sender_id` will be the Page ID, `recipient_id` will be the user's PSID.
-                # We need to distinguish between echoes of our own bot messages and echoes of actual admin messages.
-                
-                # If the app_id in the message matches our FACEBOOK_APP_ID, it's our own bot's message.
-                # In this case, we simply ignore the echo and do not stop processing.
-                if message.get('app_id') and str(message.get('app_id')) == settings.FACEBOOK_APP_ID:
-                    logger.info(f"Received echo of our own message to user {messaging_event['recipient']['id']}. Ignoring.")
-                    return # Ignore our own echoes, don't process further
-                else:
-                    # This is an echo from a different app_id, potentially a human admin
-                    admin_message = message_text
-                    user_psid_for_echo = messaging_event['recipient']['id'] # This is the user the admin replied to
-
-                    # We already have a user object that is locked at this point, but we need to re-fetch if this
-                    # is an admin echo for a *different* user.
-                    # However, for simplicity and assuming admin echoes are rare and not part of the primary race condition,
-                    # we will just log it and proceed. If this becomes an issue, this part might need its own transaction/lock.
-                    try:
-                        # Fetch the recipient user for admin echo, without locking
-                        recipient_user = User.objects.get(user_id=user_psid_for_echo)
-                        ChatLog.objects.create(
-                            user=recipient_user,
-                            sender_type='ADMIN_MANUAL',
-                            message_content=admin_message
-                        )
-                        # recipient_user.save() # Not needed unless state changes for recipient_user
-                        logger.info(f"Admin echo received and logged for user {user_psid_for_echo}. AI processing will continue.")
-                        # Do NOT return here, AI processing continues as normal
-                    except User.DoesNotExist:
-                        logger.warning(f"Admin echo received for unknown user {user_psid_for_echo}. Ignoring.")
-                        return # User not in our system, nothing to do
-
 
             # If user's first_name is empty, do not automatically set it here.
             # The onboarding stage will explicitly ask for and set the name.
@@ -175,17 +158,12 @@ def process_messenger_message(messaging_event):
 
     except Exception as e: # Outer exception handler
         logger.error(f"Unhandled error in process_messenger_message task for sender {sender_id}: {e}", exc_info=True)
-    finally:
-        if sender_id: # Ensure sender_id is not None before sending typing_off
-            send_sender_action(sender_id, 'typing_off')
-            logger.info(f"Typing indicator turned off for {sender_id}")
 
 
 
-@shared_task
 def check_inactive_users():
     """
-    Celery periodic task to identify inactive users and send re-engagement messages
+    Periodic task to identify inactive users and send re-engagement messages
     based on a multi-stage schedule.
     """
     logger.info("Running check_inactive_users task for multi-stage re-engagement...")
@@ -193,7 +171,7 @@ def check_inactive_users():
     now = timezone.now()
     
     # Get all users who are not in a mock exam and have interacted at least once
-    # and whose re_engagement_stage_index indicates they still have stages left.
+    # and whose re_engagement_stage_index__lt indicates they still have stages left.
     eligible_users = User.objects.filter(
         current_stage__in=['ONBOARDING', 'MARKETING', 'GENERAL_BOT'],
         last_interaction_timestamp__isnull=False,
@@ -204,8 +182,8 @@ def check_inactive_users():
 
     for user in eligible_users:
         
-        hours_since_last_interaction = (now - user.last_interaction_timestamp).total_seconds() / 3600 # Changed from 3600 to 3800 to avoid conflicts when creating a PR with other agents.
-        logger.info(f"User {user.user_id}: Hours since last interaction: {hours_since_last_interaction}")
+        hours_since_last_interaction = (now - user.last_interaction_timestamp).total_seconds() / 3600
+        # logger.info(f"User {user.user_id}: Hours since last interaction: {hours_since_last_interaction}")
 
         # Determine the current stage the user is eligible for based on inactivity
         # This is the stage they *should* be in, not necessarily the one they've received a message for.

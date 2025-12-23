@@ -15,7 +15,7 @@ def _get_user_by_fb_id(fb_id: str):
     try:
         return User.objects.get(user_id=fb_id)
     except User.DoesNotExist:
-        logger.warning(f"User with fb_id {fb_id} not found in the database.")
+        logger.debug(f"User with fb_id {fb_id} not found in the database.")
         return None
 
 def send_messenger_message(recipient_id, message_text):

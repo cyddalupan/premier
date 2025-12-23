@@ -216,3 +216,41 @@ class PromptRetrievalTest(TestCase):
         prompt.text_content = "Updated content."
         prompt.save()
         self.assertGreater(prompt.updated_at, old_updated_at)
+
+
+import datetime
+from django.utils import timezone
+
+class UserGPT52UsageTest(TestCase):
+    def test_user_has_gpt_5_2_usage_fields(self):
+        user = User.objects.create(user_id='test_user_gpt_fields')
+        self.assertTrue(hasattr(user, 'gpt_5_2_daily_count'))
+        self.assertTrue(hasattr(user, 'gpt_5_2_last_reset_date'))
+
+    def test_gpt_5_2_daily_count_default_value(self):
+        user = User.objects.create(user_id='test_user_gpt_count_default')
+        self.assertEqual(user.gpt_5_2_daily_count, 0)
+
+    def test_gpt_5_2_last_reset_date_default_value(self):
+        user = User.objects.create(user_id='test_user_gpt_date_default')
+        user.refresh_from_db() # Ensure we are getting the value as stored in DB
+        self.assertEqual(user.gpt_5_2_last_reset_date, timezone.now().date())
+
+    def test_set_and_get_gpt_5_2_usage_fields(self):
+        user = User.objects.create(user_id='test_user_gpt_set_get')
+        user.gpt_5_2_daily_count = 5
+        user.gpt_5_2_last_reset_date = datetime.date(2024, 1, 1)
+        user.save()
+
+        retrieved_user = User.objects.get(user_id='test_user_gpt_set_get')
+        self.assertEqual(retrieved_user.gpt_5_2_daily_count, 5)
+        self.assertEqual(retrieved_user.gpt_5_2_last_reset_date, datetime.date(2024, 1, 1))
+
+    def test_gpt_5_2_daily_count_can_exceed_limit_temporarily(self):
+        # This test ensures the field itself can store values beyond 10,
+        # the limit enforcement will be in business logic.
+        user = User.objects.create(user_id='test_user_gpt_exceed_limit')
+        user.gpt_5_2_daily_count = 15
+        user.save()
+        retrieved_user = User.objects.get(user_id='test_user_gpt_exceed_limit')
+        self.assertEqual(retrieved_user.gpt_5_2_daily_count, 15)
