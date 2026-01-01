@@ -1,5 +1,6 @@
 import random
 import logging
+from django.conf import settings # Import settings
 from .models import Question, User # Added import for Question model, User model for GPT-5.2 usage tracking
 from django.utils import timezone # Added import for timezone
 import chat.prompts # Import for LOADING_MESSAGES
@@ -36,7 +37,7 @@ def generate_persuasion_messages(user, context):
     Generates persuasion messages based on user registration status and context.
     """
     messages = []
-    website_link = "https://www.premierreviewcenter.com" # Placeholder, should be from settings
+    website_link = settings.REVIEW_CENTER_WEBSITE_URL # Use settings for website link
 
     if user.is_registered_website_user:
         # User is already registered, offer encouragement or next steps on the website
@@ -50,13 +51,13 @@ def generate_persuasion_messages(user, context):
         # User is not registered, actively persuade them to register
         if context == 'exam_finished':
             messages.append(f"Congratulations on completing the mock exam, {user.first_name}! To unlock comprehensive study materials, detailed performance analytics, and even more practice questions, register for free at our Review Center website: {website_link}")
-            messages.append("It's the best way to prepare for the bar exam!")
+            messages.append(f"It's the best way to prepare for the bar exam! Visit us at {website_link}")
         elif context == 'exam_opt_out':
             messages.append(f"I understand, {user.first_name}. Taking a break is perfectly fine! However, don't miss out on hundreds of practice questions, in-depth legal discussions, and personalized study plans. Visit our Review Center website and register for free to boost your preparation: {website_link}")
-            messages.append("You can continue your review anytime, at your own pace.")
+            messages.append(f"You can continue your review anytime, at your own pace at {website_link}.")
         elif context == 'general_chat':
             messages.append(f"Are you looking for more resources or detailed explanations, {user.first_name}? Our Review Center website offers an extensive library of legal materials and practice tools. Register for free today: {website_link}")
-            messages.append("It's a powerful tool to enhance your bar exam preparation!")
+            messages.append(f"It's a powerful tool to enhance your bar exam preparation! Check it out at {website_link}")
     
     return messages
 

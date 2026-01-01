@@ -640,3 +640,463 @@ INFO 2025-12-23 13:57:05,697 task_queue 1472689 133060779245696 Task queue worke
 INFO 2025-12-23 13:59:14,319 task_queue 1474560 128535150919808 Task queue worker thread started.
 INFO 2025-12-23 14:00:01,665 task_queue 1392064 138317609825984 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
 INFO 2025-12-23 14:00:16,975 task_queue 1392064 138317609825984 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-23 15:00:01,719 task_queue 1392064 138317609825984 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-23 15:00:16,568 task_queue 1392064 138317609825984 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-23 16:00:01,269 task_queue 1392064 138317609825984 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-23 16:00:01,286 task_queue 1392064 138317609825984 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-23 17:00:01,816 task_queue 1392064 138317609825984 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-23 17:00:01,831 task_queue 1392064 138317609825984 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-23 18:00:02,211 task_queue 1392064 138317609825984 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-23 18:00:02,368 task_queue 1392064 138317609825984 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-23 19:00:02,351 task_queue 1392064 138317609825984 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-23 19:00:02,491 task_queue 1392064 138317609825984 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-23 20:00:01,760 task_queue 1392064 138317609825984 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-23 20:00:12,333 task_queue 1392064 138317609825984 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-23 21:00:01,353 task_queue 1392064 138317609825984 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-23 21:00:08,533 task_queue 1392064 138317609825984 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-23 22:00:01,852 task_queue 1392064 138317609825984 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-23 22:00:01,867 task_queue 1392064 138317609825984 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-23 23:00:01,362 task_queue 1392064 138317609825984 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-23 23:00:01,372 task_queue 1392064 138317609825984 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-24 00:00:09,879 task_queue 1776615 138317840496320 Task queue worker thread started.
+INFO 2025-12-24 00:00:10,125 task_queue 1776615 138317609825984 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-24 00:00:10,146 task_queue 1776615 138317609825984 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-24 01:00:01,769 task_queue 1776615 138317609825984 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-24 01:00:16,273 task_queue 1776615 138317609825984 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-24 02:00:01,565 task_queue 1776615 138317609825984 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-24 02:00:01,580 task_queue 1776615 138317609825984 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-24 02:26:34,938 task_queue 1787133 128285478475456 Task queue worker thread started.
+INFO 2025-12-24 03:00:01,529 task_queue 1787133 128285228922560 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-24 03:00:01,562 task_queue 1787133 128285228922560 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-24 04:00:01,766 task_queue 1787133 128285228922560 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-24 04:00:01,798 task_queue 1787133 128285228922560 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-24 05:00:04,510 task_queue 1841240 130911832094400 Task queue worker thread started.
+INFO 2025-12-24 05:00:04,646 task_queue 1841240 130911601424064 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-24 05:00:04,707 task_queue 1841240 130911601424064 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-24 06:00:07,126 task_queue 1871064 137905702258368 Task queue worker thread started.
+INFO 2025-12-24 06:00:07,371 task_queue 1871064 137905458640576 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-24 06:00:17,091 task_queue 1871064 137905458640576 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-24 07:00:04,811 task_queue 1970267 126622862661312 Task queue worker thread started.
+INFO 2025-12-24 07:00:04,943 task_queue 1970267 126622615205568 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-24 07:00:16,109 task_queue 1970267 126622615205568 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-24 08:00:05,154 task_queue 1998329 129249105139392 Task queue worker thread started.
+INFO 2025-12-24 08:00:05,278 task_queue 1998329 129248931083968 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-24 08:00:05,307 task_queue 1998329 129248931083968 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-24 09:00:05,318 task_queue 2055853 129178059916992 Task queue worker thread started.
+INFO 2025-12-24 09:00:05,453 task_queue 2055853 129177827145408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-24 09:00:05,476 task_queue 2055853 129177827145408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-24 10:00:01,160 task_queue 2055853 129177827145408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-24 10:00:01,171 task_queue 2055853 129177827145408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-24 11:00:01,835 task_queue 2055853 129177827145408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-24 11:00:01,860 task_queue 2055853 129177827145408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-24 12:00:02,045 task_queue 2055853 129177827145408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-24 12:00:02,065 task_queue 2055853 129177827145408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-24 13:00:01,773 task_queue 2055853 129177827145408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-24 13:00:01,788 task_queue 2055853 129177827145408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-24 14:00:02,405 task_queue 2055853 129177827145408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-24 14:00:02,421 task_queue 2055853 129177827145408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-24 15:00:09,117 task_queue 2184346 125001428596416 Task queue worker thread started.
+INFO 2025-12-24 15:00:09,466 task_queue 2184346 125001236739776 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-24 15:00:09,509 task_queue 2184346 125001236739776 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-24 16:00:01,193 task_queue 2184346 125001236739776 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-24 16:00:01,212 task_queue 2184346 125001236739776 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-24 17:00:02,009 task_queue 2184346 125001236739776 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-24 17:00:02,029 task_queue 2184346 125001236739776 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-24 18:00:01,565 task_queue 2184346 125001236739776 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-24 18:00:01,577 task_queue 2184346 125001236739776 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-24 19:00:01,790 task_queue 2184346 125001236739776 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-24 19:00:01,822 task_queue 2184346 125001236739776 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-24 20:00:01,928 task_queue 2184346 125001236739776 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-24 20:00:01,978 task_queue 2184346 125001236739776 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-24 21:00:01,975 task_queue 2184346 125001236739776 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-24 21:00:01,983 task_queue 2184346 125001236739776 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-24 22:00:01,476 task_queue 2184346 125001236739776 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-24 22:00:01,493 task_queue 2184346 125001236739776 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-24 23:00:01,983 task_queue 2184346 125001236739776 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-24 23:00:01,989 task_queue 2184346 125001236739776 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-25 00:00:01,667 task_queue 2184346 125001236739776 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-25 00:00:01,691 task_queue 2184346 125001236739776 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-25 01:00:04,445 task_queue 2240742 125001478952640 Task queue worker thread started.
+INFO 2025-12-25 01:00:04,555 task_queue 2240742 125001237788352 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-25 01:00:04,587 task_queue 2240742 125001237788352 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-25 02:00:01,163 task_queue 2240742 125001237788352 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-25 02:00:01,169 task_queue 2240742 125001237788352 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-25 03:00:01,817 task_queue 2240742 125001237788352 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-25 03:00:01,838 task_queue 2240742 125001237788352 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-25 04:00:01,583 task_queue 2240742 125001237788352 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-25 04:00:01,603 task_queue 2240742 125001237788352 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-25 06:05:26,428 task_queue 2333359 137056502142656 Task queue worker thread started.
+INFO 2025-12-25 06:05:26,648 task_queue 2333359 137056260978368 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-25 06:05:26,725 task_queue 2333359 137056260978368 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-25 07:00:10,642 task_queue 2333359 137056260978368 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-25 07:00:25,374 task_queue 2333359 137056260978368 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-25 08:00:08,238 task_queue 970 123572039177920 Task queue worker thread started.
+INFO 2025-12-25 08:00:08,575 task_queue 970 123571864073920 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-25 08:00:08,688 task_queue 970 123571864073920 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-25 09:00:06,267 task_queue 165379 127016638600896 Task queue worker thread started.
+INFO 2025-12-25 09:00:06,560 task_queue 165379 127016401630912 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-25 09:00:06,627 task_queue 165379 127016401630912 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-25 09:21:39,705 task_queue 180101 136646395381440 Task queue worker thread started.
+INFO 2025-12-25 10:00:06,687 task_queue 195333 127416139429568 Task queue worker thread started.
+INFO 2025-12-25 10:00:06,908 task_queue 195333 127415896504000 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-25 10:00:06,976 task_queue 195333 127415896504000 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-25 11:00:06,258 task_queue 280249 123355779667648 Task queue worker thread started.
+INFO 2025-12-25 11:00:06,476 task_queue 280249 123355536553664 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-25 11:00:06,530 task_queue 280249 123355536553664 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-25 12:00:06,904 task_queue 325400 138280812742336 Task queue worker thread started.
+INFO 2025-12-25 12:00:07,096 task_queue 325400 138280565733056 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-25 12:00:07,145 task_queue 325400 138280565733056 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-25 13:00:02,120 task_queue 325400 138280565733056 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-25 13:00:02,151 task_queue 325400 138280565733056 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-25 13:42:57,612 task_queue 430937 138846313825984 Task queue worker thread started.
+INFO 2025-12-25 13:42:59,950 task_queue 430937 138846070109888 Executing enqueued task: process_messenger_message with args: ({'sender': {'id': '26161562270128766'}, 'recipient': {'id': '953289451191723'}, 'timestamp': 1766670172305, 'message': {'mid': 'm_RzRVkhatpi6lkmOncpc3F-tejMvAr_FigJFYy6_LXyLyYovxESigNRIwzPwxrM-oEyMBS-4JminX9Hk6QVHm0g', 'text': 'Hi'}},), kwargs: {}
+INFO 2025-12-25 13:43:16,150 task_queue 430937 138846070109888 Successfully executed enqueued task: process_messenger_message
+INFO 2025-12-25 13:43:16,151 task_queue 430937 138846070109888 Executing enqueued task: process_messenger_message with args: ({'sender': {'id': '33017361464578938'}, 'recipient': {'id': '953289451191723'}, 'timestamp': 1766670178472, 'message': {'mid': 'm_XNDjME69QjBkj3jKpkpc4Vfk2Wx_ehJbdo1rVm9DtyfXAsjasy5wF8qAcQqTNjG7nvs7dBXPR2qvvvKL20AgQw', 'text': 'Hi'}},), kwargs: {}
+INFO 2025-12-25 13:43:31,639 task_queue 430937 138846070109888 Successfully executed enqueued task: process_messenger_message
+INFO 2025-12-25 14:00:03,777 task_queue 442595 125383024514752 Task queue worker thread started.
+INFO 2025-12-25 14:00:03,889 task_queue 442595 125382778943168 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-25 14:00:03,916 task_queue 442595 125382778943168 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-25 14:30:14,795 task_queue 470757 131954137831104 Task queue worker thread started.
+INFO 2025-12-25 14:30:16,908 task_queue 470757 131953828296384 Executing enqueued task: process_messenger_message with args: ({'sender': {'id': '25954306607495995'}, 'recipient': {'id': '953289451191723'}, 'timestamp': 1766673011484, 'message': {'mid': 'm_5oXzJo1ZZU8oAV5eQFjIZc9gdkEd4mFTQbWDn7_IX0V6jpFLY7RvoWWxES0UnvvARMleDqtLMvdobmG9jYuT2g', 'text': 'Hello'}},), kwargs: {}
+INFO 2025-12-25 14:30:19,723 task_queue 470757 131953828296384 Successfully executed enqueued task: process_messenger_message
+INFO 2025-12-25 15:00:03,641 task_queue 494536 134852907529920 Task queue worker thread started.
+INFO 2025-12-25 15:00:03,760 task_queue 494536 134852664882880 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-25 15:00:11,751 task_queue 494536 134852664882880 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-25 15:00:38,984 task_queue 494536 134852664882880 Executing enqueued task: process_messenger_message with args: ({'sender': {'id': '33017361464578938'}, 'recipient': {'id': '953289451191723'}, 'timestamp': 1766674835761, 'message': {'mid': 'm_E3VnQk_jgN2FsnOWVM2sdVfk2Wx_ehJbdo1rVm9DtyeYEjAZUngts28OmfVu7hfUqji-3_x0d7cpIXN1ozK8Dg', 'text': '509990'}},), kwargs: {}
+INFO 2025-12-25 15:01:08,401 task_queue 494536 134852664882880 Successfully executed enqueued task: process_messenger_message
+INFO 2025-12-25 15:01:21,621 task_queue 494536 134852664882880 Executing enqueued task: process_messenger_message with args: ({'sender': {'id': '33017361464578938'}, 'recipient': {'id': '953289451191723'}, 'timestamp': 1766674863523, 'message': {'mid': 'm_hsEoVnm0SzkJrZtijZXKoFfk2Wx_ehJbdo1rVm9Dtyf6E_ma6HzDV1HKBtB0iymgMOmboVEcHJwYVQIkEC6NOg', 'text': 'Cge tax'}},), kwargs: {}
+INFO 2025-12-25 15:01:41,629 task_queue 494536 134852664882880 Successfully executed enqueued task: process_messenger_message
+INFO 2025-12-25 15:01:41,630 task_queue 494536 134852664882880 Executing enqueued task: process_messenger_message with args: ({'sender': {'id': '33017361464578938'}, 'recipient': {'id': '953289451191723'}, 'timestamp': 1766674877948, 'message': {'mid': 'm_RIWe0gGBKgSJv_QzaCHQvlfk2Wx_ehJbdo1rVm9DtyfO8O_a6ZPhvC1veMIiRrNOH3BWcxSNiEZYkhltIHjvlQ', 'text': 'English ka'}},), kwargs: {}
+INFO 2025-12-25 15:02:03,577 task_queue 494536 134852664882880 Successfully executed enqueued task: process_messenger_message
+INFO 2025-12-25 15:02:03,578 task_queue 494536 134852664882880 Executing enqueued task: process_messenger_message with args: ({'sender': {'id': '33017361464578938'}, 'recipient': {'id': '953289451191723'}, 'timestamp': 1766674919268, 'message': {'mid': 'm_VBqnhhEzNg9E6CdZfOHpx1fk2Wx_ehJbdo1rVm9DtyfxrxZPpdwnxem19nbrmNjix50CfMck051pbFf6Vp0fTg', 'text': 'Explain alac'}},), kwargs: {}
+INFO 2025-12-25 15:02:34,185 task_queue 494536 134852664882880 Successfully executed enqueued task: process_messenger_message
+INFO 2025-12-25 16:00:01,369 task_queue 494536 134852664882880 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-25 16:00:08,476 task_queue 494536 134852664882880 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-25 17:00:01,868 task_queue 494536 134852664882880 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-25 17:00:10,151 task_queue 494536 134852664882880 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-25 18:00:01,247 task_queue 494536 134852664882880 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-25 18:00:01,257 task_queue 494536 134852664882880 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-25 19:00:01,617 task_queue 494536 134852664882880 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-25 19:00:01,625 task_queue 494536 134852664882880 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-25 20:00:01,368 task_queue 494536 134852664882880 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-25 20:00:11,626 task_queue 494536 134852664882880 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-25 21:00:01,784 task_queue 494536 134852664882880 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-25 21:00:12,672 task_queue 494536 134852664882880 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-25 22:00:02,111 task_queue 494536 134852664882880 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-25 22:00:02,155 task_queue 494536 134852664882880 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-25 23:00:01,535 task_queue 494536 134852664882880 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-25 23:00:01,541 task_queue 494536 134852664882880 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-26 00:00:11,634 task_queue 701717 134852891899584 Task queue worker thread started.
+INFO 2025-12-26 00:00:11,985 task_queue 701717 134852665931456 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-26 00:00:12,036 task_queue 701717 134852665931456 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-26 01:00:01,685 task_queue 701717 134852665931456 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-26 01:00:01,693 task_queue 701717 134852665931456 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-26 02:00:01,263 task_queue 701717 134852665931456 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-26 02:00:22,395 task_queue 701717 134852665931456 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-26 03:00:02,283 task_queue 701717 134852665931456 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-26 03:00:11,668 task_queue 701717 134852665931456 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-26 03:37:43,067 task_queue 767107 139724339902144 Task queue worker thread started.
+INFO 2025-12-26 03:52:23,697 task_queue 780918 123545991255744 Task queue worker thread started.
+INFO 2025-12-26 03:52:25,638 task_queue 780918 123545773405888 Executing enqueued task: process_messenger_message with args: ({'sender': {'id': '26478303961757577'}, 'recipient': {'id': '953289451191723'}, 'timestamp': 1766721140258, 'message': {'mid': 'm_OeBWYoxVv_31ZW8mo17Bfd22UvPdb0vuzOqHG9QxsgbR_MOPKjLrwIlMLy7BURoLXR3qSo6jeg36HnZzHT0FtA', 'text': 'merry christmas'}},), kwargs: {}
+INFO 2025-12-26 03:52:39,552 task_queue 780918 123545773405888 Successfully executed enqueued task: process_messenger_message
+INFO 2025-12-26 04:00:02,256 task_queue 780918 123545773405888 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-26 04:00:02,292 task_queue 780918 123545773405888 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-26 05:00:01,719 task_queue 780918 123545773405888 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-26 05:00:14,290 task_queue 780918 123545773405888 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-26 06:00:02,035 task_queue 780918 123545773405888 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-26 06:00:02,078 task_queue 780918 123545773405888 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-26 07:00:01,333 task_queue 780918 123545773405888 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-26 07:00:01,347 task_queue 780918 123545773405888 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-26 08:00:09,298 task_queue 901752 140318151169728 Task queue worker thread started.
+INFO 2025-12-26 08:00:09,693 task_queue 901752 140317908006592 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-26 08:00:09,756 task_queue 901752 140317908006592 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-26 09:00:08,015 task_queue 961720 133464385873600 Task queue worker thread started.
+INFO 2025-12-26 09:00:08,297 task_queue 961720 133464192972480 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-26 09:00:18,182 task_queue 961720 133464192972480 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-26 10:00:01,883 task_queue 961720 133464192972480 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-26 10:00:01,937 task_queue 961720 133464192972480 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-26 11:00:01,802 task_queue 961720 133464192972480 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-26 11:00:01,835 task_queue 961720 133464192972480 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-26 12:00:09,569 task_queue 974000 129477374637760 Task queue worker thread started.
+INFO 2025-12-26 12:00:09,826 task_queue 974000 129477240682176 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-26 12:00:23,299 task_queue 974000 129477240682176 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-26 13:00:01,655 task_queue 974000 129477240682176 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-26 13:00:09,147 task_queue 974000 129477240682176 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-26 14:00:07,479 task_queue 1072224 130841887372992 Task queue worker thread started.
+INFO 2025-12-26 14:00:07,760 task_queue 1072224 130841644627648 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-26 14:00:07,808 task_queue 1072224 130841644627648 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-26 14:10:27,904 task_queue 1072224 130841644627648 Executing enqueued task: process_messenger_message with args: ({'sender': {'id': '26478303961757577'}, 'recipient': {'id': '953289451191723'}, 'timestamp': 1766758223523, 'message': {'mid': 'm_r7f8AIdeslIecS87Nqc3yd22UvPdb0vuzOqHG9QxsgZqgRTv22AlYN80yM_-YlITN2K-dTGDTNUUR3-tCviZLw', 'text': 'Any news today?'}},), kwargs: {}
+INFO 2025-12-26 14:10:46,960 task_queue 1072224 130841644627648 Successfully executed enqueued task: process_messenger_message
+INFO 2025-12-26 15:00:01,610 task_queue 1072224 130841644627648 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-26 15:00:01,652 task_queue 1072224 130841644627648 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-26 16:00:05,074 task_queue 1182922 137815451580096 Task queue worker thread started.
+INFO 2025-12-26 16:00:05,187 task_queue 1182922 137815200364224 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-26 17:00:08,327 task_queue 1225800 137024018671296 Task queue worker thread started.
+INFO 2025-12-26 17:00:08,632 task_queue 1225800 137023776093888 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-26 17:00:08,683 task_queue 1225800 137023776093888 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-26 18:00:03,875 task_queue 1280427 126962701428416 Task queue worker thread started.
+INFO 2025-12-26 18:00:03,998 task_queue 1280427 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-26 18:00:04,038 task_queue 1280427 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-26 19:00:02,140 task_queue 1280427 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-26 19:00:02,156 task_queue 1280427 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-26 20:00:01,487 task_queue 1280427 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-26 20:00:12,118 task_queue 1280427 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-26 21:00:01,946 task_queue 1280427 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-26 21:00:01,961 task_queue 1280427 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-26 22:00:01,374 task_queue 1280427 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-26 22:00:01,386 task_queue 1280427 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-26 23:00:01,214 task_queue 1280427 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-26 23:00:01,226 task_queue 1280427 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-27 00:00:01,605 task_queue 1280427 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-27 00:00:01,625 task_queue 1280427 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-27 01:00:05,264 task_queue 1630047 126962694104768 Task queue worker thread started.
+INFO 2025-12-27 01:00:05,513 task_queue 1630047 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-27 01:00:05,595 task_queue 1630047 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-27 02:00:02,303 task_queue 1630047 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-27 02:00:12,625 task_queue 1630047 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-27 03:00:02,160 task_queue 1630047 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-27 03:00:02,174 task_queue 1630047 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-27 04:00:02,129 task_queue 1630047 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-27 04:00:02,143 task_queue 1630047 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-27 05:00:01,867 task_queue 1630047 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-27 05:00:01,891 task_queue 1630047 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-27 06:00:01,786 task_queue 1630047 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-27 06:00:01,796 task_queue 1630047 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-27 07:00:01,380 task_queue 1630047 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-27 07:00:01,390 task_queue 1630047 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-27 08:00:02,122 task_queue 1630047 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-27 08:00:02,128 task_queue 1630047 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-27 09:00:01,141 task_queue 1630047 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-27 09:00:01,153 task_queue 1630047 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-27 10:00:01,661 task_queue 1630047 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-27 10:00:01,679 task_queue 1630047 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-27 11:00:01,214 task_queue 1630047 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-27 11:00:01,226 task_queue 1630047 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-27 12:00:01,155 task_queue 1630047 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-27 12:00:09,161 task_queue 1630047 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-27 13:00:02,126 task_queue 1630047 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-27 13:00:02,156 task_queue 1630047 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-27 14:00:01,841 task_queue 1630047 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-27 14:00:01,860 task_queue 1630047 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-27 15:00:01,265 task_queue 1630047 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-27 15:00:01,279 task_queue 1630047 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-27 16:00:02,141 task_queue 1630047 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-27 16:00:02,169 task_queue 1630047 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-27 17:00:01,822 task_queue 1630047 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-27 17:00:01,856 task_queue 1630047 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-27 18:00:01,556 task_queue 1630047 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-27 18:00:01,571 task_queue 1630047 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-27 19:00:01,233 task_queue 1630047 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-27 19:00:01,247 task_queue 1630047 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-27 20:00:01,860 task_queue 1630047 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-27 20:00:01,897 task_queue 1630047 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-27 21:00:01,348 task_queue 1630047 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-27 21:00:01,357 task_queue 1630047 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-27 22:00:01,676 task_queue 1630047 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-27 22:00:01,692 task_queue 1630047 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-27 23:00:01,399 task_queue 1630047 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-27 23:00:01,406 task_queue 1630047 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-28 00:00:11,006 task_queue 1901974 126962702497472 Task queue worker thread started.
+INFO 2025-12-28 00:00:11,259 task_queue 1901974 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-28 00:00:11,312 task_queue 1901974 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-28 01:00:02,200 task_queue 1901974 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-28 01:00:02,208 task_queue 1901974 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-28 02:00:01,249 task_queue 1901974 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-28 02:00:01,262 task_queue 1901974 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-28 03:00:01,676 task_queue 1901974 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-28 03:00:01,691 task_queue 1901974 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-28 04:00:01,157 task_queue 1901974 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-28 04:00:01,164 task_queue 1901974 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-28 05:00:01,594 task_queue 1901974 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-28 05:00:01,630 task_queue 1901974 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-28 05:02:12,343 task_queue 1901974 126962454492864 Executing enqueued task: process_messenger_message with args: ({'sender': {'id': '26478303961757577'}, 'recipient': {'id': '953289451191723'}, 'timestamp': 1766898128837, 'message': {'mid': 'm_mrWkeQwDCFOLUJn9VcgHj922UvPdb0vuzOqHG9QxsgZiTZc3-iEyO3kSSwEYW-83JfMCVaRI8oAivaI6D1ZD_A', 'text': 'Acknowledge'}},), kwargs: {}
+INFO 2025-12-28 05:02:26,583 task_queue 1901974 126962454492864 Successfully executed enqueued task: process_messenger_message
+INFO 2025-12-28 06:00:01,461 task_queue 1901974 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-28 06:00:01,481 task_queue 1901974 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-28 07:00:01,398 task_queue 1901974 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-28 07:00:09,521 task_queue 1901974 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-28 08:00:01,706 task_queue 1901974 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-28 08:00:01,723 task_queue 1901974 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-28 09:00:01,275 task_queue 1901974 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-28 09:00:01,291 task_queue 1901974 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-28 10:00:01,873 task_queue 1901974 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-28 10:00:01,885 task_queue 1901974 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-28 11:00:01,244 task_queue 1901974 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-28 11:00:09,214 task_queue 1901974 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-28 12:00:02,361 task_queue 1901974 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-28 12:00:02,383 task_queue 1901974 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-28 13:00:01,437 task_queue 1901974 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-28 13:00:01,449 task_queue 1901974 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-28 14:00:02,226 task_queue 1901974 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-28 14:00:02,255 task_queue 1901974 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-28 15:00:01,925 task_queue 1901974 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-28 15:00:01,955 task_queue 1901974 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-28 16:00:02,098 task_queue 1901974 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-28 16:00:02,145 task_queue 1901974 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-28 17:00:02,015 task_queue 1901974 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-28 17:00:15,333 task_queue 1901974 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-28 18:00:01,448 task_queue 1901974 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-28 18:00:01,464 task_queue 1901974 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-28 19:00:01,985 task_queue 1901974 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-28 19:00:02,015 task_queue 1901974 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-28 20:00:01,614 task_queue 1901974 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-28 20:00:01,626 task_queue 1901974 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-28 21:00:01,246 task_queue 1901974 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-28 21:00:01,263 task_queue 1901974 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-28 22:00:01,647 task_queue 1901974 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-28 22:00:01,657 task_queue 1901974 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-28 23:00:01,916 task_queue 1901974 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-28 23:00:02,010 task_queue 1901974 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-29 00:00:09,442 task_queue 1987043 126962702497472 Task queue worker thread started.
+INFO 2025-12-29 00:00:09,636 task_queue 1987043 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-29 00:00:09,664 task_queue 1987043 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-29 01:00:01,501 task_queue 1987043 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-29 01:00:01,516 task_queue 1987043 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-29 02:00:01,133 task_queue 1987043 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-29 02:00:01,138 task_queue 1987043 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-29 03:00:01,539 task_queue 1987043 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-29 03:00:12,797 task_queue 1987043 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-29 04:00:01,905 task_queue 1987043 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-29 04:00:01,920 task_queue 1987043 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-29 05:00:01,652 task_queue 1987043 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-29 05:00:01,656 task_queue 1987043 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-29 06:00:01,152 task_queue 1987043 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-29 06:00:01,167 task_queue 1987043 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-29 07:00:02,137 task_queue 1987043 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-29 07:00:02,210 task_queue 1987043 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-29 08:00:01,753 task_queue 1987043 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-29 08:00:01,783 task_queue 1987043 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-29 09:00:01,560 task_queue 1987043 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-29 09:00:01,571 task_queue 1987043 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-29 10:00:01,151 task_queue 1987043 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-29 10:00:01,174 task_queue 1987043 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-29 11:00:01,606 task_queue 1987043 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-29 11:00:01,631 task_queue 1987043 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-29 12:00:01,197 task_queue 1987043 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-29 12:00:01,202 task_queue 1987043 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-29 13:00:01,578 task_queue 1987043 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-29 13:00:01,593 task_queue 1987043 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-29 14:00:02,295 task_queue 1987043 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-29 14:00:02,307 task_queue 1987043 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-29 14:21:10,206 task_queue 1987043 126962454492864 Executing enqueued task: process_messenger_message with args: ({'sender': {'id': '26478303961757577'}, 'recipient': {'id': '953289451191723'}, 'timestamp': 1767018066509, 'message': {'mid': 'm_GL0PU3w1BDoT2jg_9RsWs922UvPdb0vuzOqHG9QxsgY7BZyzM9epdWjHBf8bS4lajzYplgVAf42UXNRf92ZfiA', 'text': 'Nice'}},), kwargs: {}
+INFO 2025-12-29 14:21:26,381 task_queue 1987043 126962454492864 Successfully executed enqueued task: process_messenger_message
+INFO 2025-12-29 15:00:01,758 task_queue 1987043 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-29 15:00:01,779 task_queue 1987043 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-29 16:00:01,433 task_queue 1987043 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-29 16:00:09,817 task_queue 1987043 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-29 16:55:26,414 task_queue 2033303 140420654366848 Task queue worker thread started.
+INFO 2025-12-29 16:56:30,784 task_queue 2034360 136714271268992 Task queue worker thread started.
+INFO 2025-12-29 16:57:38,264 task_queue 2035434 139053302579328 Task queue worker thread started.
+INFO 2025-12-29 17:00:01,903 task_queue 1987043 126962454492864 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-29 17:00:01,929 task_queue 1987043 126962454492864 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-29 17:02:24,231 task_queue 2039431 124835284735680 Task queue worker thread started.
+INFO 2025-12-29 17:02:26,940 task_queue 2039431 124835036395200 Executing enqueued task: process_messenger_message with args: ({'sender': {'id': '26478303961757577'}, 'recipient': {'id': '953289451191723'}, 'timestamp': 1767027741548, 'message': {'mid': 'm_7uH2Pj3AqLMcPEigaGFRct22UvPdb0vuzOqHG9QxsgbuynbfgEp2jyXIqtzgMq-BruOpaaboz0Nz5eXOJSl-Ew', 'text': 'I want to have better grades'}},), kwargs: {}
+INFO 2025-12-29 17:02:49,345 task_queue 2039431 124835036395200 Successfully executed enqueued task: process_messenger_message
+INFO 2025-12-29 17:03:06,207 task_queue 2039431 124835036395200 Executing enqueued task: process_messenger_message with args: ({'sender': {'id': '26478303961757577'}, 'recipient': {'id': '953289451191723'}, 'timestamp': 1767027782409, 'message': {'mid': 'm_PUsVhUQL7XCEclSND5HLAN22UvPdb0vuzOqHG9QxsgYTiFWy3b4WjmOs1Sw6xIl6Sm8p3zsvIRgScpkdDqalOg', 'text': 'what is the url of the review center again?'}},), kwargs: {}
+INFO 2025-12-29 17:03:19,260 task_queue 2039431 124835036395200 Successfully executed enqueued task: process_messenger_message
+INFO 2025-12-29 17:11:12,307 task_queue 2048123 124578916917376 Task queue worker thread started.
+INFO 2025-12-29 17:11:27,196 task_queue 2048502 124867502182528 Task queue worker thread started.
+INFO 2025-12-29 17:14:04,063 task_queue 2050737 134381110908608 Task queue worker thread started.
+INFO 2025-12-29 17:14:05,767 task_queue 2050737 134380861257408 Executing enqueued task: process_messenger_message with args: ({'sender': {'id': '26478303961757577'}, 'recipient': {'id': '953289451191723'}, 'timestamp': 1767028441185, 'message': {'mid': 'm_DA4qctAFaglEuUm56Iao4d22UvPdb0vuzOqHG9Qxsgbtz1Tc-gFFGwVEop6uw9Nqa0AjDfTz2FUKFfKG2ITJbg', 'text': 'I though you are selling the review center?'}},), kwargs: {}
+INFO 2025-12-29 17:14:19,890 task_queue 2050737 134380861257408 Successfully executed enqueued task: process_messenger_message
+INFO 2025-12-29 18:00:02,315 task_queue 2050737 134380861257408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-29 18:00:02,353 task_queue 2050737 134380861257408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-29 19:00:01,400 task_queue 2050737 134380861257408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-29 19:00:09,218 task_queue 2050737 134380861257408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-29 20:00:01,807 task_queue 2050737 134380861257408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-29 20:00:01,820 task_queue 2050737 134380861257408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-29 21:00:01,188 task_queue 2050737 134380861257408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-29 21:00:01,199 task_queue 2050737 134380861257408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-29 22:00:01,599 task_queue 2050737 134380861257408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-29 22:00:01,613 task_queue 2050737 134380861257408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-29 23:00:01,144 task_queue 2050737 134380861257408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-29 23:00:10,965 task_queue 2050737 134380861257408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-30 00:00:01,292 task_queue 2050737 134380861257408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-30 00:00:01,299 task_queue 2050737 134380861257408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-30 01:00:04,621 task_queue 2077159 134381111563968 Task queue worker thread started.
+INFO 2025-12-30 01:00:04,744 task_queue 2077159 134380861257408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-30 01:00:04,773 task_queue 2077159 134380861257408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-30 02:00:01,941 task_queue 2077159 134380861257408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-30 02:00:01,975 task_queue 2077159 134380861257408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-30 03:00:01,559 task_queue 2077159 134380861257408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-30 03:00:01,565 task_queue 2077159 134380861257408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-30 03:22:48,896 task_queue 2077159 134380861257408 Executing enqueued task: process_messenger_message with args: ({'sender': {'id': '26478303961757577'}, 'recipient': {'id': '953289451191723'}, 'timestamp': 1767064965828, 'message': {'mid': 'm_VCuk0cAkeYXpnfMfRhSwHd22UvPdb0vuzOqHG9QxsgZv_i_-nbeV6JJGkmskAsnBOhYVBISjdWWgHRcLQZFTkA', 'text': 'Thank you for the link I am\nRegistered now'}},), kwargs: {}
+INFO 2025-12-30 03:23:06,235 task_queue 2077159 134380861257408 Successfully executed enqueued task: process_messenger_message
+INFO 2025-12-30 04:00:01,602 task_queue 2077159 134380861257408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-30 04:00:01,619 task_queue 2077159 134380861257408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-30 05:00:01,392 task_queue 2077159 134380861257408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-30 05:00:11,812 task_queue 2077159 134380861257408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-30 06:00:02,107 task_queue 2077159 134380861257408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-30 06:00:02,134 task_queue 2077159 134380861257408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-30 07:00:01,906 task_queue 2077159 134380861257408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-30 07:00:01,942 task_queue 2077159 134380861257408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-30 08:00:01,581 task_queue 2077159 134380861257408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-30 08:00:01,600 task_queue 2077159 134380861257408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-30 09:00:01,315 task_queue 2077159 134380861257408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-30 09:00:07,454 task_queue 2077159 134380861257408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-30 10:00:02,045 task_queue 2077159 134380861257408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-30 10:00:02,054 task_queue 2077159 134380861257408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-30 11:00:01,929 task_queue 2077159 134380861257408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-30 11:00:01,944 task_queue 2077159 134380861257408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-30 12:00:01,683 task_queue 2077159 134380861257408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-30 12:00:01,710 task_queue 2077159 134380861257408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-30 13:00:01,960 task_queue 2077159 134380861257408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-30 13:00:02,022 task_queue 2077159 134380861257408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-30 14:00:01,508 task_queue 2077159 134380861257408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-30 14:00:01,536 task_queue 2077159 134380861257408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-30 15:00:01,280 task_queue 2077159 134380861257408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-30 15:00:13,047 task_queue 2077159 134380861257408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-30 15:56:45,918 task_queue 2170098 131603881345152 Task queue worker thread started.
+INFO 2025-12-30 16:00:01,230 task_queue 2077159 134380861257408 Executing enqueued task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-30 16:00:01,272 task_queue 2077159 134380861257408 Successfully executed enqueued task: check_inactive_users
+INFO 2025-12-30 16:29:36,341 task_queue 2199373 131622618941120 Enqueuing task: process_messenger_message with args: ({'sender': {'id': '26478303961757577'}, 'recipient': {'id': '953289451191723'}, 'timestamp': 1767112173333, 'message': {'mid': 'm_J4x-4gBvfxPGDgtc4SUCCt22UvPdb0vuzOqHG9QxsgZJ7u7Ewny2qvd8-dJSNfL1Z6DCSHZ9_atop5L4HJzsNg', 'text': 'good day'}},), kwargs: {}
+INFO 2025-12-30 17:00:01,290 task_queue 2199373 131622535014080 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-30 18:00:01,594 task_queue 2199373 131622618941120 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-30 19:00:01,166 task_queue 2199373 131622535014080 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-30 20:00:01,754 task_queue 2199373 131622618941120 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-30 21:00:01,474 task_queue 2199373 131622535014080 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-30 22:00:02,244 task_queue 2199373 131622618941120 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-30 23:00:02,232 task_queue 2199373 131622535014080 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-31 00:00:02,238 task_queue 2199373 131622618941120 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-31 01:00:09,346 task_queue 2254861 131622527649472 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-31 02:00:02,153 task_queue 2254861 131622510847680 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-31 03:00:01,690 task_queue 2254861 131622527649472 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-31 04:00:01,440 task_queue 2254861 131622510847680 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-31 05:00:02,381 task_queue 2254861 131622527649472 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-31 06:00:02,212 task_queue 2254861 131622510847680 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-31 07:00:01,171 task_queue 2254861 131622527649472 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-31 08:00:02,260 task_queue 2254861 131622510847680 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-31 09:00:02,133 task_queue 2254861 131622527649472 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-31 10:00:02,140 task_queue 2254861 131622510847680 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-31 11:00:02,198 task_queue 2254861 131622527649472 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-31 12:00:02,155 task_queue 2254861 131622510847680 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-31 13:00:01,908 task_queue 2254861 131622527649472 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-31 14:00:01,833 task_queue 2254861 131622510847680 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-31 15:00:01,736 task_queue 2254861 131622510847680 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-31 16:00:02,153 task_queue 2254861 131622527649472 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-31 17:00:01,826 task_queue 2254861 131622527649472 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-31 18:00:01,660 task_queue 2254861 131622527649472 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-31 19:00:02,272 task_queue 2254861 131622510847680 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-31 20:00:01,256 task_queue 2254861 131622527649472 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-31 21:00:01,714 task_queue 2254861 131622510847680 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-31 22:00:02,033 task_queue 2254861 131622527649472 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2025-12-31 23:00:01,330 task_queue 2254861 131622510847680 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2026-01-01 00:00:01,982 task_queue 2254861 131622527649472 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2026-01-01 01:00:01,461 task_queue 2305156 131622502438592 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2026-01-01 02:00:01,894 task_queue 2305156 131622620010176 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2026-01-01 03:00:02,115 task_queue 2305156 131622502438592 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2026-01-01 04:00:01,379 task_queue 2305156 131622620010176 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2026-01-01 05:00:01,774 task_queue 2305156 131622502438592 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2026-01-01 06:00:01,181 task_queue 2305156 131622620010176 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2026-01-01 06:02:28,579 task_queue 2305156 131622502438592 Enqueuing task: process_messenger_message with args: ({'sender': {'id': '26478303961757577'}, 'recipient': {'id': '953289451191723'}, 'timestamp': 1767247343898, 'message': {'mid': 'm_h-VvzAQG7TryogGQgQOebd22UvPdb0vuzOqHG9QxsgaKU7Fpq6VEoiOnob1mIGbfLPE9LRCj15GUHyUqSkVBEg', 'text': 'wow nice tips'}},), kwargs: {}
+INFO 2026-01-01 07:00:01,411 task_queue 2305156 131622620010176 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2026-01-01 08:00:02,001 task_queue 2305156 131622502438592 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2026-01-01 09:00:01,804 task_queue 2305156 131622620010176 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2026-01-01 10:00:01,138 task_queue 2305156 131622620010176 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2026-01-01 11:00:01,408 task_queue 2305156 131622502438592 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2026-01-01 12:00:01,329 task_queue 2305156 131622620010176 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2026-01-01 13:00:01,909 task_queue 2305156 131622502438592 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2026-01-01 14:00:01,601 task_queue 2305156 131622620010176 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2026-01-01 15:00:01,432 task_queue 2305156 131622502438592 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2026-01-01 16:00:02,223 task_queue 2305156 131622502438592 Enqueuing task: check_inactive_users with args: (), kwargs: {}
+INFO 2026-01-01 17:00:02,023 task_queue 2305156 131622620010176 Enqueuing task: check_inactive_users with args: (), kwargs: {}

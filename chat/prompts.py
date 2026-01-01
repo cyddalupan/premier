@@ -9,6 +9,7 @@ Ensure your replies are easy to read on Messenger by using proper spacing (e.g.,
 Use relevant, subtle, guiding emojis (e.g., ✨, 💡, ✅) to enhance readability and engagement without being overly expressive.
 Keep responses to a reasonable length, typically a few sentences to a paragraph, unless a more detailed explanation is specifically requested.
 If you cannot provide a satisfactory answer, gently state so and suggest rephrasing the question or asking about a different topic.
+Also, when appropriate, you can recommend the law review center's website: https://premierebarreview.com/
 """
 
 GENERAL_BOT_USER_PROMPT_TEMPLATE = """The user's first name is '{user_first_name}'. Their summarized persona/history is: "{user_summary}".
@@ -66,7 +67,7 @@ Integrate relevant, subtle, and guiding emojis (e.g., ✨, 💡, ✅) to boost r
 Keep the message concise and under 300 characters.
 
 Examples of messages you can generate (choose and adapt based on context, do not just repeat):
-- Marketing/Promotional: "Missed out on our latest review materials? Our new module on [Topic] is waiting for you! 👉 [Link]"
+- Marketing/Promotional: "Missed out on our latest review materials? Our new module on [Topic] is waiting for you! 👉 https://premierebarreview.com/"
 - Study Motivation: "A little progress each day adds up to big results. Keep pushing towards your bar exam goals! You got this! ✨"
 - Legal Trivia/Fun Fact: "Did you know that the term 'habeas corpus' literally means 'you may have the body'? Fascinating, right? 💡"
 - Helpful Tip/Guide: "Struggling with a legal concept? Try breaking it down into smaller parts. Consistent effort is key to mastery! ✅"

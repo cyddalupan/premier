@@ -33,7 +33,8 @@ def process_messenger_message(messaging_event): # Removed @shared_task
     sender_id = None # Initialize sender_id outside try block for finally access
     try: # Outer try block for general error logging
         sender_id = messaging_event['sender']['id']
-        send_sender_action(sender_id, 'typing_on') # Turn on typing indicator
+        # The typing_on indicator is sent by the webhook_callback in views.py.
+        # No need to send it again here, as it's handled by the immediate response.
         message = messaging_event.get('message')
         postback = messaging_event.get('postback')
         message_text = None

@@ -49,7 +49,7 @@ class TestAIIntegration(TestCase):
         mock_create.assert_called_once()
         call_args, call_kwargs = mock_create.call_args
         self.assertEqual(call_kwargs['model'], 'gpt-5-mini')
-        self.assertIn("friendly and highly creative AI assistant", call_kwargs['messages'][0]['content'])
+        self.assertIn("https://premierebarreview.com/", call_kwargs['messages'][0]['content'])
 
     @patch('openai.chat.completions.create', side_effect=openai.OpenAIError('API Error'))
     def test_generate_re_engagement_message_openai_error_fallback(self, mock_create):

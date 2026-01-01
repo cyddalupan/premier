@@ -39,7 +39,20 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'legal',
     'chat',
+    'django_q', # Added for Django Q
 ]
+
+# Django Q configuration
+Q_CLUSTER = {
+    'name': 'premier_cluster',
+    'workers': 4,
+    'timeout': 90,
+    'retry': 120,
+    'queue_limit': 50,
+    'bulk': 10,
+    'orm': 'default', # Use Django's ORM as the broker
+    'log_level': 'INFO', # Set log level for qcluster
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -82,6 +95,9 @@ FACEBOOK_PAGE_ACCESS_TOKEN = os.getenv('FACEBOOK_PAGE_ACCESS_TOKEN')
 MESSENGER_VERIFY_TOKEN = os.getenv('MESSENGER_VERIFY_TOKEN')
 OPEN_AI_TOKEN = os.getenv('OPEN_AI_TOKEN')
 FACEBOOK_APP_ID = os.getenv('FACEBOOK_APP_ID') # Required for differentiating bot echoes from admin messages
+
+# Custom Settings
+REVIEW_CENTER_WEBSITE_URL = "https://premierebarreview.com/"
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
@@ -152,7 +168,7 @@ LOGGING = {
     },
     'handlers': {
         'console': {
-            'level': 'WARNING',
+            'level': 'DEBUG', # Temporarily changed to DEBUG for verbose qcluster output
             'class': 'logging.StreamHandler',
             'formatter': 'simple'
         },
@@ -176,9 +192,14 @@ LOGGING = {
             'level': 'WARNING',
             'propagate': False,
         },
-        'task_queue': {
+        'task_queue': { # This logger is for the OLD custom task queue, might be removed later
             'handlers': ['task_queue_file'],
             'level': 'DEBUG',
+            'propagate': False,
+        },
+        'django_q': { # NEW: Logger for Django Q
+            'handlers': ['console'],
+            'level': 'INFO', # Set to INFO or DEBUG for more detailed output
             'propagate': False,
         },
     },
